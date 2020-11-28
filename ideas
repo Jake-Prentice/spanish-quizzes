@@ -1,0 +1,62 @@
+/quiz goes to the quiz (redirect to config if no config yet)
+/config goes to the config page of the MainCard.
+
+
+routes:
+
+
+/api/quizzes/configure?save=true => 
+
+post request send config list from frontend backend gets the necessary words for the quiz
+,query save=bool and will decide whether to persist to the db or not.
+
+/api/quizzes/all/lists/all/verbs/123 X
+/api/quizLists/verbs X
+
+/api/quizzes/configs
+
+v1
+------------
+POST api/quizzes?save=false => |convert config to quiz => send back to client|
+
+GET api/quizzes => |return a existing db config turned to quiz| 
+------------
+GET api/quizzes/configs/123 =>  |returns saved config files.|
+
+POST api/quizzes/configs => |save config straight to db|
+------------
+
+v2
+------------
+GET api/quiz-configs/:config_id => ||
+
+POST api/quiz-configs/ => ||
+------------
+GET api/quizzes/:id => ||
+
+POST api/quizzes/ => ||
+------------
+
+v3
+------------
+GET api/quizzes/:id?configure=false => |returns the config file with id|
+GET api/quizzes/:id?configure=true => |returns the converted config file with id|
+
+POST api/quizzes => |adds config file to db|
+POST api/quizzes?configure=true => |adds config file to db and returns that config converted to quiz|
+------------
+could be this aswell ^^
+
+GET api/quiz-configs/:id?configure=false   |  GET api/quiz-configs/:id?configure_on_res=false
+GET api/quiz-configs/:id?configure=true    |  GET api/quiz-configs/:id?configure_on_res=true 
+
+POST api/quiz-configs         
+POST api/quiz-configs?configure=true       |  POST api/quiz-configs?configure_on_res=true 
+---------------
+
+POST api/quiz/configs?configure_on_res=true
+POST api/quiz
+
+GET api/quiz/configs/:id?configure_on_res=true
+
+POST api/quiz/lists/all/verbs
