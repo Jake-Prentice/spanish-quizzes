@@ -1,11 +1,13 @@
 const mongoose = require("mongoose");
+const config = require("../config");
+const {ErrorHandler} = require("../helpers/error");
 
 const mongooseLoader = async() => {
-    mongoose.connect("mongodb://localhost:27017/spanish-quizzes-db",{ 
+    mongoose.connect(config.mongoUri,{ 
         useUnifiedTopology: true,
         useNewUrlParser: true, 
         useFindAndModify: false 
-    }).catch(err => console.log(err));
+    }).catch(err => {throw new ErrorHandler(500, err.message)});
 }
 
 module.exports = mongooseLoader;
