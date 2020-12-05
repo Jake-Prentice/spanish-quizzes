@@ -15,33 +15,3 @@ const theme = {
 }
 
 export default theme;
-
-//list error box #ff4b5c => radical red
-
-//list item #87556f => strike master
-//button "#87556f"
-
-//list-container scroll bar #ee6f57 => burnt sienna 
-
-//list container scroll bar bg #F5F5F5 => wild sand
-
-//body background => baltic sea.
-
-//list card footer #59405c => voodoo
-
-//sub list and list card card bg #322f3d => tuna
-//sub list card footer #322f3d;
-//main card #322f3d
-
-// tick #59405c
-
-//burger "#4c485c" => mulled wine
-
-
-// #9583d8"} svg2 => chetwode blue
-//svg 1 9583d8
-
-// "#2e2746" => martinique
-// "#28213f" => steel gray
-
-//#52505c might be good

@@ -12,7 +12,7 @@ export const BurgerButton = styled(BaseButton)`
     position: absolute;
     left: 1rem;
     top: 1rem;
-    background: #3a384669;
+    background: #4c447869;
     :disabled {opacity: 1};
     box-shadow: none;
   

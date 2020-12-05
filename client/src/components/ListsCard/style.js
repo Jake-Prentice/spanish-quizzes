@@ -1,13 +1,9 @@
 import styled, {css} from "styled-components";
-import {
-    LISTSCARD_WIDTH,
-    LISTSCARD_HEIGHT
-} from "components/shared/layout";
 
 //parent card specific
 export const CardWrapper = styled.div`
-    width: ${LISTSCARD_WIDTH}px;
-    height: ${LISTSCARD_HEIGHT}px;
+    width: 320px;
+    height: 560px;
     background: ${props => props.theme.colors.tuna};
     border: 4px solid #4b5d67;
     display: flex;
