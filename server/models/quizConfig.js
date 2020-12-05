@@ -1,16 +1,13 @@
 const mongoose = require("mongoose");
 
 const quizConfigSchema = {
-    mood: {type: String, required: true},
-    paradigms: [
-        {
-            paradigm: {
-                type: String, 
-                required: true
-            }, 
-            pronouns: {type: Array}
-        }
-    ]
+    filterOptions: { 
+        moods: [
+            {mood: {type: String, required: true}, tenses: [{
+                tense: {type: String, required: true}, forms: []
+            }]}
+        ]
+    }
 };
 
-module.exports = mongoose.model("QuizConfig", quizConfigSchema);
+module.exports = quizConfigSchema

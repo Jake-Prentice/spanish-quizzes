@@ -15,7 +15,7 @@ const MainCard = (props) => {
     return (
         <MainCardContainer>
             <Route exact path={"/"}>
-                Home
+                <Button size={"medium"} variant={"secondary"}>Start</Button>
             </Route>
             <Route exact path={"/config"}>
                 <ConfigPage 

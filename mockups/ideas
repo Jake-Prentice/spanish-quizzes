@@ -60,3 +60,34 @@ POST api/quiz
 GET api/quiz/configs/:id?configure_on_res=true
 
 POST api/quiz/lists/all/verbs
+
+
+
+{mood: "imperative", paradigms: [
+    {type: "affirmative"},
+    {type: "negative"}
+
+]}
+
+
+const mood = SpanishVerb.findMood("indicative");
+
+for each tense in config.moods:
+
+    const tense = mood.findTense(tense);
+
+    for each form in config.moods.tenses:
+
+        quizVerbs.push(tense.findForm(form))
+
+
+------------
+
+const tenses = ["present", "preterit", "future"]
+
+moods.tenses.forEach(tense => {
+    conjugations.map(conjugation => {
+        const props = Object.keys(conjugation);
+        return props.contains(tense);
+    })
+})
