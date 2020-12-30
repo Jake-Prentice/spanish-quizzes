@@ -1,15 +1,17 @@
 const express = require("express");
-const {ErrorHandler} = require("../../helpers/error");
+const {ErrorHandler} = require("../../../helpers/error");
+const config = require("../../../config");
 //routers
 const quizRouter = express.Router();
 const verbRouter = express.Router({mergeParams: true}); //so you can access params from the parent
+const quizConfigRouter = require("./quizConfig");
 //models
-const Quiz = require("../../models/quiz");
-const SpanishVerb = require("../../models/spanishVerb");
+const Quiz = require("../../../models/quiz");
+const SpanishVerb = require("../../../models/spanishVerb");
 //middlewares 
-const middlewares = require("../middlewares");
+const middlewares = require("../../middlewares");
 //services
-const quizService = require("../../services/quiz");
+const quizService = require("../../../services/quiz");
 
 const isOriginal = async (req,res,next) => {
     const foundQuiz = await Quiz.find({title: req.body.title})
@@ -18,6 +20,7 @@ const isOriginal = async (req,res,next) => {
 };
 
 quizRouter.use("/:quizId/verbs", verbRouter);
+quizRouter.use("/:quizId/configs", quizConfigRouter);
 
 quizRouter.route("/")
 
@@ -34,7 +37,14 @@ quizRouter.route("/")
             const newQuiz = new Quiz({ // creates a new quiz
                 title: req.body.title
             })
+            //initialise configs
+            for (i=0; i < config.numOfQuizConfigs; i++) {
+                newQuiz.configs.push({ 
+                    saveNum: i + 1,
+                })
+            }
             await newQuiz.save();
+            console.log(newQuiz);
             res.status(200).end();
         }catch(err) {next(err)}
     })

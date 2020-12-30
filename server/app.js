@@ -5,6 +5,7 @@ const routes = require("./api");
 const mongoose = require("mongoose");
 const {handleError, ErrorHandler} = require("./helpers/error");
 const SpanishVerb = require("./models/spanishVerb");
+const quizService = require("./services/quiz");
 
 const app = express();
 
@@ -25,47 +26,23 @@ mongoose.connection.on("error", () => {
 })
 
 //routes
-app.use("/api", routes); //change to /api
+app.use("/api", routes); 
 
-app.post("/test-config", async (req,res) => {
-    const verb = "hablar";
-    const foundVerb = await SpanishVerb.findOne({verb});
-    const quizConfig =  [
-        {mood: "imperative", paradigms: [
-            {type: "affirmative"},
-            {type: "negative"}
-
-        ]}
-    ]
-
-    const quizConfig2 = {
+app.post("/test-config", async (req,res) => {   
+    const verb = await SpanishVerb.findOne({verb: "hablar"});
+    
+    const quizConfig = {
         filterOptions: {
-            moods: [
-                {mood: "indicative", tenses: []}
-            ]
-        },
-        maxVerbs: 50
+            moods: [{
+                name: "indicative"
+            }]
+        }
     }
-        
-    // quizConfig.filterOptions.moods.forEach(({mood}) => ...)
-    const quizVerbs = [];
 
-    quizConfig.forEach(config => {
-        const mood = foundVerb.moods.find(obj => obj.mood === config.mood); //finds the mood
-        config.paradigms.forEach(paradigm => {
-            if (paradigm.forms) {
-                paradigm.forms.forEach(form => {
-                    conjugation = mood.conjugations.find(elm => elm.person === form);
-                    quizVerbs.push(conjugation[paradigm.type])
-                })
-            }else {
-                mood.conjugations.forEach(conjugation => {
-                    quizVerbs.push(conjugation[paradigm.type])
-                })
-            }
-        });
-    })
-    res.json(quizVerbs);
+
+    res.json(await quizService.configureQuizConfig(quizConfig, verb));
+
+    // res.json(await quizService.configureQuizByConfigId("5fd10f53db56738384e20cb1"));
 })      
 
 app.listen(5000 , (res, req) => {

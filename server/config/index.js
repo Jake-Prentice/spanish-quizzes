@@ -6,5 +6,6 @@ if (envFound.error) {
 }
 
 module.exports = { 
-    mongoUri: `mongodb+srv://jake-admin:${process.env.MONGO_PASSWORD}@spanishquizzescluster.x8x9h.mongodb.net/spanish-quizzes-db?retryWrites=true&w=majority`
+    mongoUri: `mongodb+srv://jake-admin:${process.env.MONGO_PASSWORD}@spanishquizzescluster.x8x9h.mongodb.net/spanish-quizzes-db?retryWrites=true&w=majority`,
+    numOfQuizConfigs: 5
 }

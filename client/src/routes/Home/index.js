@@ -9,7 +9,7 @@ import {
 } from "./style"
 import {SvgWaveTop, SvgWaveBottom} from "components/SvgWaves";
 
-const ListSideBar = props => SideBar(ListsCard, props);
+const ListSideBar = props => SideBar(ListsCard, props); // move pls!
 
 const Home = () => {
     const [currentListId, setCurrentListId] = useState("");
