@@ -6,7 +6,8 @@ const mongooseLoader = async() => {
     mongoose.connect(config.mongoUri,{ 
         useUnifiedTopology: true,
         useNewUrlParser: true, 
-        useFindAndModify: false 
+        useFindAndModify: false,
+        useCreateIndex: true 
     }).catch(err => {throw new ErrorHandler(500, err.message)});
 }
 

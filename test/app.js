@@ -1,26 +1,44 @@
-const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
-const axios = require("axios").default;
 const mongoose = require("mongoose");
+const axios = require("axios").default;
+const fs = require("fs");
 
-const verb = "conllevar";
-const mood = "indicative";
-const paradigm = "present";
+
+const mongooseLoader = async() => {
+    mongoose.connect("mongodb://localhost:27017/spanish-verbs-db",{ 
+        useUnifiedTopology: true,
+        useNewUrlParser: true, 
+        useFindAndModify: false 
+    })
+}
+
 
 (async ( ) => {
-    const html = await axios.get(`https://www.spanishdict.com/conjugate/${verb}`);
-    const $ = cheerio.load(html.data);
-    const verbInfo = JSON.parse(
-        $("script")[35]
-            .children[0]
-            .data
-            .replace("window.SD_COMPONENT_DATA = ", "")
-            .replace(/;+/g, "")
-    )
-   
-    const verbConjugations = verbInfo.verb.paradigms;
+    
+    await mongooseLoader();
+    mongoose.connection.on("connected", () => {
+        console.log("connected");
+    })
 
-    console.log(verbConjugations)
+    const Verb = mongoose.model("SpanishVerb", {});
+    let verbs = await Verb.find({});
+    const arr = [];
+    verbs.forEach(verb => {
+        
+        if (!arr.includes(verb.toObject().verb.replace(/s+/g, "").toLowerCase())) {
+            arr.push(verb.toObject().verb);
+        }else {
+            console.log("verb already exists");
+        }
+      
+    })
+
+   fs.writeFile("./verbs", JSON.stringify(arr), err => {
+       if (err) console.log(err)
+       else console.log("completed");
+   })
+
+
 })()
 
 

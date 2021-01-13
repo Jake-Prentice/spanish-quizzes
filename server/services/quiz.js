@@ -24,7 +24,7 @@ const configureQuizConfig = (quizConfig, verb) => {
     if (quizConfig.filterOptions.moods) {
         quizConfig.filterOptions.moods.forEach(currentMood => {
             const verbMood = verb.moods.find(({mood}) => mood === currentMood.name); 
-            
+            // verbMood = verb.moods[mood]
             if (currentMood.tenses) {
                 currentMood.tenses.forEach(tense => {
                     const meta = {mood: currentMood.name, tense: tense.name}
@@ -41,7 +41,8 @@ const configureQuizConfig = (quizConfig, verb) => {
                             })
                         })
                     }else { //no pronoun options
-                        verbMood.conjugations.forEach(conjugation => { 
+
+                       verbMood.conjugations.forEach(conjugation => { 
                             verbForms.push({
                                 verbForm: conjugation[tense.name], 
                                 meta: { 

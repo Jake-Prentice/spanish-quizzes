@@ -6,7 +6,9 @@ const mongoose = require("mongoose");
 const {handleError, ErrorHandler} = require("./helpers/error");
 const SpanishVerb = require("./models/spanishVerb");
 const quizService = require("./services/quiz");
-
+const spanishDict = require("./helpers/spanishDict");
+const fs = require("fs");
+const {addVerb} = require("./services/verbInfo");
 const app = express();
 
 //middleware
@@ -28,23 +30,15 @@ mongoose.connection.on("error", () => {
 //routes
 app.use("/api", routes); 
 
-app.post("/test-config", async (req,res) => {   
-    const verb = await SpanishVerb.findOne({verb: "hablar"});
-    
-    const quizConfig = {
-        filterOptions: {
-            moods: [{
-                name: "indicative"
-            }]
-        }
-    }
-
-
-    res.json(await quizService.configureQuizConfig(quizConfig, verb));
-
-    // res.json(await quizService.configureQuizByConfigId("5fd10f53db56738384e20cb1"));
-})      
-
+app.get("/do-it", (req,res) => {
+    fs.readFile("../test/verbs.json", {encoding: 'utf-8'}, function(err,data){
+        const verbs = JSON.parse(data);
+        verbs.forEach((verb, index) => {
+            addVerb(verb, index)
+        })
+        console.log("finished all verbs")
+    });
+})
 app.listen(5000 , (res, req) => {
     console.log("listening on port 5000")
 })

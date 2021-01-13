@@ -40,7 +40,6 @@ export const addVerbToQuiz = async ({quizId, verb}) => {
     try {
         console.log({verb})
         const res = await axios.post(`/quizzes/${quizId}/verbs`, {verb});
-        console.log("here dsddssddds")
         return res.data;
     }catch(err) {throw new Error(err.response.data)}
 }
