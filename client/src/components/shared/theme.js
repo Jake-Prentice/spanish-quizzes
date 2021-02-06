@@ -11,6 +11,9 @@ const theme = {
         chetwodeBlue: "#9583d8",
         martinique: "#2e2746",
         steelGray: "#28213f"
+    },
+    mainCard: {
+        width: "1200px"
     }
 }
 

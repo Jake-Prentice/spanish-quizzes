@@ -1,5 +1,5 @@
-import React from "react";
-import {Route} from "react-router-dom"
+import React, {useState} from "react";
+import {Route, useLocation} from "react-router-dom"
 //components
 import ConfigPage from "./ConfigPage";
 import QuizPage from "./QuizPage";
@@ -10,18 +10,13 @@ import {
 }from "./style"
 
 const MainCard = (props) => {
-    const {currentListId} = props;
 
     return (
-        <MainCardContainer>
+        <MainCardContainer currentPage={useLocation().pathname}>
             <Route exact path={"/"}>
-                <Button size={"medium"} variant={"secondary"}>Start</Button>
+                This is the home page
             </Route>
-            <Route exact path={"/config"}>
-                <ConfigPage 
-                    currentListId={currentListId}
-                />
-            </Route>
+            <Route exact path={"/config"} component={ConfigPage} />
             <Route exact path={"/quiz"} component={QuizPage} />
         </MainCardContainer>
     )

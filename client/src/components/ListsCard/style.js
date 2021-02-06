@@ -10,7 +10,8 @@ export const CardWrapper = styled.div`
     align-items: center;
     flex-direction: column;
     position: relative;
-    z-index: 1;
+    z-index: 10;
+  
 `;
 
 export const ErrorContainer = styled.div`
@@ -45,7 +46,7 @@ export const ListItem = styled.div`
     cursor: pointer;
     color: white;
     margin-bottom: .7rem;
-    ${props => props.selected ? "border: 1.5px solid white" : "none"};
+    ${props => props.selected ? "box-shadow: 0 0 0 1.5px white" : "none"};
     :hover {
         filter: brightness(1.1);
     }
@@ -108,7 +109,7 @@ export const ListContainer = styled.div`
     padding-top: 1rem;
     flex-direction: column;
     overflow-y: auto;
-    flex: 1;
+    flex: 2;
 
     &::-webkit-scrollbar-track {
         box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
@@ -155,4 +156,8 @@ export const CardFooter = styled.div`
     justify-content: center;
     align-items: center;
     position: relative;
+    
+    button { 
+        margin: 0 0.7rem;
+    }
 `;

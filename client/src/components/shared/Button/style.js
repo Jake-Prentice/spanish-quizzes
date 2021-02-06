@@ -6,7 +6,6 @@ export const BaseButton = styled.button`
     cursor: pointer;
     outline: none;
     transition: filter 0.2s ease;
-    margin: 0 .7rem; /*make sure to turn off */
     box-shadow: 0 0 0.3125em 0.1em rgba(0,0,0,.2), 
         inset 0 0 0.06em rgba(0,0,0,.4);
     
@@ -35,8 +34,10 @@ export const StyledButton = styled(BaseButton)`
                 `;
             case "medium":
                 return css`
-                    font-size: 0.9rem;
+                    font-size: 0.7rem;
                     padding: 1em 1.4em;
+                    width: 7em;
+                    height:3em;
                 `
             case "large":
                 return css`

@@ -13,7 +13,7 @@ export const GlobalStyle = createGlobalStyle`
         background: #1e1d24;
         color: white;
         font-family: sans-serif;
-        overflow: hidden;
+        overflow: auto;
         width: 100vw;
         height: 100vh;
     }

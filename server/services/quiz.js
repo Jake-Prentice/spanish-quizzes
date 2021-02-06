@@ -1,6 +1,6 @@
 const {ErrorHandler} = require("../helpers/error");
 const Quiz = require("../models/quiz");
-const SpanishVerb = require("../models/spanishVerb");
+const VerbData = require("../models/verbData");
 
 const addVerbToQuiz = async ({quizId, verb}) => {
     try{
@@ -10,84 +10,43 @@ const addVerbToQuiz = async ({quizId, verb}) => {
     }catch(err) {throw new Error(err)}
 }
 
-
-const addConfigToQuiz = async (quizId, config) => {
-
-
-}
-
-
 const configureQuizConfig = (quizConfig, verb) => {
 
-    const verbForms = [];
-
-    if (quizConfig.filterOptions.moods) {
-        quizConfig.filterOptions.moods.forEach(currentMood => {
-            const verbMood = verb.moods.find(({mood}) => mood === currentMood.name); 
-            // verbMood = verb.moods[mood]
-            if (currentMood.tenses) {
-                currentMood.tenses.forEach(tense => {
-                    const meta = {mood: currentMood.name, tense: tense.name}
-                    
-                    if (tense.pronouns) { //are pronoun options
-                        tense.pronouns.forEach(pronoun => {
-                            pronounConjugations = verbMood.conjugations.find(conjugations => conjugations.person === pronoun);  
-                            verbForms.push({
-                                verbForm: pronounConjugations[tense.name], 
-                                meta: {
-                                    ...meta, 
-                                    pronoun
-                                }
-                            })
-                        })
-                    }else { //no pronoun options
-
-                       verbMood.conjugations.forEach(conjugation => { 
-                            verbForms.push({
-                                verbForm: conjugation[tense.name], 
-                                meta: { 
-                                    ...meta, 
-                                    pronoun: conjugation.person
-                                }
-                            })
-                        })
-                    }
-                });
-
-            }else {
-                verbMood.conjugations.forEach(conjugation => {
-                    for (let tense in conjugation) {
-                        verbForms.push({
-                            verbForm: conjugation[tense],
-                            meta: {
-                                mood: currentMood.name,
-                                tense,
-                                pronoun: conjugation.person
-                            }
-                        })
-                    }
-                })
+    const stack = [verb.paradigms];
+    const words = [];
+    
+    const traverseTree = (obj) => {
+        for (let value in obj) {
+            if (typeof obj[value] === "object") traverseTree(obj[value])
+            else {
+               words.push(obj[value])
             }
-        })
-
-    }else {
-        verb.moods.forEach(mood => {
-            mood.conjugations.forEach(conjugation => {
-                for (let tense in conjugation) {
-                    verbForms.push({
-                        verbForm: conjugation[tense],
-                        meta: {
-                            mood: mood.mood,
-                            tense,
-                            pronoun: conjugation.person
-                        }
-                    })
-                }
-            })
-        })
+        }
     }
+
+    const traverseConfig = (obj) => {
+            for (let value in obj) {
+                if (typeof obj[value] === "object") traverseConfig(obj[value])
+                else {
+                    const next = stack[stack.length - 1][obj[value]]
+                    
+                    if (value === "mood" && !obj.tenses) traverseTree(next);
+                    else if (value === "tense" && !obj.pronouns) traverseTree(next);
+                    
+                    else {
+                        if (typeof next === "object") stack.push(next);
+                        else words.push(next);
+                    }
+                }
+            }
+          
+            if (typeof obj === "object" && obj.length !== undefined) stack.pop(); // the only way I could think of telling apart an array from an object
+            
+    }
+
+    traverseConfig(quizConfig.filterOptions);
+    return words;
   
-    return verbForms;
 }
 
 const configureQuizByConfigId = async (id) => {
@@ -95,14 +54,14 @@ const configureQuizByConfigId = async (id) => {
         const foundQuiz = await Quiz.findOne({"configs._id": id}).select("configs.$ verbs");
         const quizVerbs = [];
     
-        const verbs = await SpanishVerb.find({ verb: {
+        const verbs = await VerbData.find({ verb: {
             $in: foundQuiz.verbs.map( ({verb}) => verb )
         }})
         
         verbs.forEach(verb => {
-            quizVerbs.push(...configureQuizConfig(foundQuiz.configs[0], verb));
+            quizVerbs.push(...configureQuizConfig(foundQuiz.configs[0].toObject(), verb.toObject()));
         })
-    
+
         return quizVerbs;
 
     }catch(err) {throw new ErrorHandler(500, err.message)}
@@ -112,7 +71,6 @@ const configureQuizByConfigId = async (id) => {
 
 module.exports = {
     addVerbToQuiz,
-    addConfigToQuiz,
     configureQuizConfig,
     configureQuizByConfigId
 };

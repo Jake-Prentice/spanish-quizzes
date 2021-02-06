@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 //components
 import SideBar from "components/SideBar"
 import MainCard from "components/MainCard"
@@ -8,20 +8,24 @@ import {
     HomeWrapper
 } from "./style"
 import {SvgWaveTop, SvgWaveBottom} from "components/SvgWaves";
+//hooks
+import {useHistory} from "react-router";
 
 const ListSideBar = props => SideBar(ListsCard, props); // move pls!
 
-const Home = () => {
-    const [currentListId, setCurrentListId] = useState("");
 
+const Home = () => {
+
+    const location = useHistory();
+
+    useEffect(() => {
+        console.log(window.screen.orientation?.type) 
+    })
     return (
         <HomeWrapper>
-            <ListSideBar setCurrentListId={setCurrentListId}/>
-            <MainCard 
-                currentListId={currentListId}
-            /> 
+            <MainCard /> 
             <SvgWaveTop />
-            <SvgWaveBottom />
+            <ListSideBar/> {/*render at top */}
         </HomeWrapper>
 
     )

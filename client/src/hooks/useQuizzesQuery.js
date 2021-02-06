@@ -1,10 +1,12 @@
-import React from 'react'
-import {useQuery} from "react-query";
+import React, {useMemo} from 'react'
+import {useQuery, useQueryClient} from "react-query";
 import {fetchQuizzes} from "api/quiz";
 
-const useQuizzesQuery = (config) => {
-    const {data: quizzes, ...rest} = useQuery("quizzes", fetchQuizzes, config);
-    return {quizzes, ...rest};
+
+export const useQuizzesQuery = (config) => {
+    return useQuery("quizzes", fetchQuizzes, config);
 }
 
-export default useQuizzesQuery;
+
+
+// (queryInfo) => qui

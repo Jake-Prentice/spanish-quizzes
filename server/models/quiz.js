@@ -1,19 +1,27 @@
 const mongoose = require("mongoose");
 
 const quizConfigSchema = {
-    saveNum: {type: Number, required: true},
     filterOptions: { 
         moods: [
             {
-                name: {type: String, required: true}, 
-                tenses: [{
-                    name: {type: String, required: true}, 
-                    pronouns: [{type: String}]
-                }]
+                mood: String, 
+                _id: false,
+                tenses: { 
+                    type: [{
+                        tense: String, 
+                        _id: false,
+                        pronouns: {
+                            type: [{pronoun: String, _id: false}],
+                            default: undefined
+                        }
+                    }],
+                    default: undefined
+                }
             }
         ]
     }
 };
+
 
 const quizSchema = {
     title: String,
@@ -22,4 +30,5 @@ const quizSchema = {
 };
 
 module.exports = mongoose.model("Quiz", quizSchema);
+
 

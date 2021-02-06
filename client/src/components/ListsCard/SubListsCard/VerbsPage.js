@@ -1,4 +1,4 @@
-import React , {useState, useEffect, useRef} from "react";
+import React , {useState, useEffect, useRef, useMemo} from "react";
 //styles
 import {
     ListContainer,
@@ -10,19 +10,24 @@ import {
 import {SubListsCardFooter, AddVerbBtnContainer} from "./style";
 import {useQuery, queryCache} from "react-query";
 //hooks
-import useQuizzesQuery from "hooks/useQuizzesQuery";
+import {useQuizzesQuery} from "hooks/useQuizzesQuery";
 import useClickOutside from "hooks/useClickOutside";
 import useFocusInput from "hooks/useFocusInput";
-import useQuizMutation from "hooks/mutations/useQuizMutation";
+import useQuizMutation from "hooks/mutations/useQuizMutation"
 //apis
 import {fetchVerbsFromQuizzes} from "api/quiz";
 //components
 import * as faSolid from "@styled-icons/fa-solid";
 import * as faRegular from "@styled-icons/fa-regular";
 
-const VerbsPage = ({selectedQuizIndex, setError}) => {
 
-    const [verbs, setVerbs] = useState([]);
+const isAVerb = (word) => {
+    return ["ar", "er", "ir"].includes(word.slice(-2).toLowerCase())
+}
+
+const VerbsPage = ({selectedQuiz, quizId}) => {
+
+    const [newVerb, setNewVerb] = useState([]);
     const [selectedVerbIndex, setSelectedVerbIndex] = useState(null);
     const [editVerb, setEditVerb] = useState(false);
     const [verbValue, setVerbValue] = useState("");
@@ -33,26 +38,18 @@ const VerbsPage = ({selectedQuizIndex, setError}) => {
     const resetStates = () => {
         setSelectedVerbIndex(null);
         setEditVerb(false); 
+        setNewVerb([])
         setVerbValue("");
     }
 
     //set data
-    const {quizzes, isLoading} = useQuizzesQuery();
-
-    useEffect(() => {
-        if (!isLoading) setVerbs(quizzes[selectedQuizIndex].verbs);
-    },[quizzes, selectedQuizIndex])
+    const {data, isLoading} = useQuizzesQuery();
+    const verbs = useMemo(() => data[selectedQuiz.index].verbs, [data, selectedQuiz.index]);
 
     //outside click handlers
     const [listItemRef] = useClickOutside(resetStates)
    
-    const [newListItemRef] = useClickOutside(() => {
-        setVerbs(prev => {
-            prev.pop()
-            return [...prev]
-        })
-        resetStates();
-    }, {
+    const [newListItemRef] = useClickOutside(resetStates, {
         ignoreByAttr: ".list-item-ignore"
     })
     
@@ -62,39 +59,42 @@ const VerbsPage = ({selectedQuizIndex, setError}) => {
     })
 
     const handleNewVerb = () => {
-        if (verbs[verbs.length - 1]?._id === "tid") return;
-        setVerbs(prev => [...prev, {_id: "tid", title: ""}])
+        if (newVerb.length !== 0) return
+        setNewVerb([{_id: "tid", verb: ""}])
         setEditVerb(true);
         setSelectedVerbIndex(verbs.length)
     }
 
     const handleVerbChange = (verbId, e) => {
         e.preventDefault();
+        if (!isAVerb(verbValue)) return resetStates(); //check see if better way pls! not the function itself
+
+        const strippedVerb = verbValue.toLowerCase().replace(/\s+/g, "");
         verbId === "tid"  
             ? addVerbToQuiz({
-                quizId: quizzes[selectedQuizIndex]._id, 
+                quizId: selectedQuiz.id, 
                 verbId,
-                verb: verbValue,
+                verb: strippedVerb,
             }) 
             : updateVerbFromQuiz({
-                quizId: quizzes[selectedQuizIndex]._id, 
+                quizId: selectedQuiz.id, 
                 verbId,
-                newVerb: verbValue
+                newVerb: strippedVerb
             })
     }
 
     useEffect(() => {
         if (!isLoading) {
-            if (verbs[verbs.length - 1]?._id === "tid") {
+            if (newVerb.length > 0) {
                 listEndRef.current.scrollIntoView({behavior: "smooth"})
             }
         }
-    }, [verbs])
+    }, [newVerb])
 
     return (
         <>
         <ListContainer>
-            {verbs && verbs.map((verbObj, index) => (
+            {verbs && !isLoading && [...verbs, ...newVerb].map((verbObj, index) => (
  
                 <ListItem
                     key={verbObj._id}
@@ -122,7 +122,7 @@ const VerbsPage = ({selectedQuizIndex, setError}) => {
                     {selectedVerbIndex === index && !editVerb &&
                         <faSolid.TrashAlt
                             size={"1rem"} 
-                            onClick={() => deleteVerbFromQuiz({quizId: quizzes[selectedQuizIndex]._id, verbId: verbObj._id})}
+                            onClick={() => deleteVerbFromQuiz({quizId: selectedQuiz.id, verbId: verbObj._id})}
                             style={{position: "absolute", right: "-1.25rem", color: "#40a8c4"}} 
                         /> 
                     }

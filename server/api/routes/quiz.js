@@ -1,17 +1,16 @@
 const express = require("express");
-const {ErrorHandler} = require("../../../helpers/error");
-const config = require("../../../config");
+const {ErrorHandler} = require("../../helpers/error");
+const config = require("../../config");
 //routers
 const quizRouter = express.Router();
 const verbRouter = express.Router({mergeParams: true}); //so you can access params from the parent
-const quizConfigRouter = require("./quizConfig");
 //models
-const Quiz = require("../../../models/quiz");
-const SpanishVerb = require("../../../models/spanishVerb");
+const Quiz = require("../../models/quiz");
+const VerbData = require("../../models/verbData");
 //middlewares 
-const middlewares = require("../../middlewares");
+const middlewares = require("../middlewares");
 //services
-const quizService = require("../../../services/quiz");
+const quizService = require("../../services/quiz");
 
 const isOriginal = async (req,res,next) => {
     const foundQuiz = await Quiz.find({title: req.body.title})
@@ -20,7 +19,6 @@ const isOriginal = async (req,res,next) => {
 };
 
 quizRouter.use("/:quizId/verbs", verbRouter);
-quizRouter.use("/:quizId/configs", quizConfigRouter);
 
 quizRouter.route("/")
 
@@ -39,9 +37,7 @@ quizRouter.route("/")
             })
             //initialise configs
             for (i=0; i < config.numOfQuizConfigs; i++) {
-                newQuiz.configs.push({ 
-                    saveNum: i + 1,
-                })
+                newQuiz.configs.push({})
             }
             await newQuiz.save();
             console.log(newQuiz);
@@ -111,7 +107,7 @@ verbRouter.route("/:verbId?")
     .delete(async (req,res,next) => {
         try{
             const {quizId, verbId} = req.params; 
-
+            console.log("delete", quizId, verbId)
             res.json(await Quiz.updateOne(
                 { _id: quizId}, 
                 { "$pull": { "verbs": { "_id": verbId } }}, 
@@ -121,4 +117,4 @@ verbRouter.route("/:verbId?")
         }catch(err) {next(err)}
     })
     
-module.exports = quizRouter;
+module.exports = quizRouter; 

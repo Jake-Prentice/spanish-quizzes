@@ -1,5 +1,5 @@
 const spanishDict = require("../helpers/spanishDict");
-const SpanishVerb = require("../models/spanishVerb");
+const VerbData = require("../models/verbData");
 const {ErrorHandler} = require("../helpers/error");
 
 const addVerb = async (verb) => {
@@ -8,7 +8,7 @@ const addVerb = async (verb) => {
         
         const verbData = await spanishDict.getVerbData(verb);
 
-        const newVerb = new SpanishVerb({
+        const newVerb = new VerbData({
             verb,
             translation: verbData.translation
         });
@@ -21,7 +21,7 @@ const addVerb = async (verb) => {
             ))        
         }
 
-        const schemaStructure = SpanishVerb.schema.obj;
+        const schemaStructure = VerbData.schema.obj;
 
         let nextConjugationIndex = 0;
 

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const spanishVerbSchema = {
+const verbDataSchema = {
     verb: {type: String, unique: true, required: true},
     translation: {type: String, required: true},
     phrases: Array,
@@ -56,10 +56,10 @@ const spanishVerbSchema = {
     }
 }
 
-for (let mood in spanishVerbSchema.paradigms) {
-    for (let tense in spanishVerbSchema.paradigms[mood]) {
+for (let mood in verbDataSchema.paradigms) {
+    for (let tense in verbDataSchema.paradigms[mood]) {
          if (mood !== "participles" && mood !== "imperative") {
-            spanishVerbSchema.paradigms[mood][tense] = {
+            verbDataSchema.paradigms[mood][tense] = {
                 "yo": {type: String, required: true},
                 "tú": {type: String, required: true},
                 "él/ella/Ud": {type: String, required: true},
@@ -71,8 +71,5 @@ for (let mood in spanishVerbSchema.paradigms) {
     }
 }
 
-// console.log(spanishVerbSchema);
 
-const SpanishVerb = mongoose.model("SpanishVerb", new mongoose.Schema(spanishVerbSchema));
-
-module.exports = SpanishVerb;
+module.exports = mongoose.model("VerbData", new mongoose.Schema(verbDataSchema), "verbdata");

@@ -10,7 +10,7 @@ export const BurgerButton = styled(BaseButton)`
     align-items: center;
     flex-direction: column;
     position: absolute;
-    left: 1rem;
+    left: 1.7rem;
     top: 1rem;
     background: #4c447869;
     :disabled {opacity: 1};

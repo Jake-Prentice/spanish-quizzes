@@ -12,10 +12,11 @@ import {
 } from "./style";
 import gsap from "gsap";
 //custom hooks
-import useQuizzesQuery from "hooks/useQuizzesQuery";
+import {useQuizzesQuery} from "hooks/useQuizzesQuery";
 import useClickOutside from "hooks/useClickOutside";
 import useFocusInput from "hooks/useFocusInput";
 import useQuizMutation from "hooks/mutations/useQuizMutation";
+import useStateWithSessionStorage from "hooks/useStateWithSessionStorage";
 //apis
 import {fetchQuizzes} from "api/quiz";
 //components
@@ -27,13 +28,14 @@ import {Transition, TransitionGroup} from "react-transition-group";
 import ItemSkeleton from "./components/ItemSkeleton"
 
 const ListsCard = (props) => {
-    const {setCurrentListId, setIsOpen, isMounted} = props;
+
+    const {setIsOpen, isMounted} = props;
 
     const [newQuiz, setNewQuiz] = useState([]);
     const [quizTitleValue, setQuizTitleValue] = useState("");
     const [editQuizTitle, setEditQuizTitle] = useState(false);
     const [infoPage, setInfoPage] = useState("")
-    const [selectedQuizIndex, setSelectedQuizIndex] = useState(null);
+    const [selectedQuiz, setSelectedQuiz] = useState({});
     const [error, setError] = useState("");
     
     const listEndRef = useRef(null);
@@ -43,13 +45,13 @@ const ListsCard = (props) => {
     const resetStates = () => {
         setInfoPage(""); 
         setEditQuizTitle(false);
-        setSelectedQuizIndex(null);
+        setSelectedQuiz({});
         setQuizTitleValue("");
         setNewQuiz([]);
     }
 
     //loading data
-    const {quizzes, isLoading} = useQuizzesQuery({
+    const {data: quizzes, isLoading} = useQuizzesQuery({}, {
         onError: err => setError(err.message)
     })
 
@@ -63,11 +65,9 @@ const ListsCard = (props) => {
         onMutating: resetStates,
         onError: err => setError(err.message)
     })
-  
+
     //events
     const handleLoadList = () => {
-        if (selectedQuizIndex === null) return;
-        setCurrentListId(quizzes[selectedQuizIndex]._id)
         setIsOpen(false);
     }
 
@@ -75,7 +75,10 @@ const ListsCard = (props) => {
         if (newQuiz.length !== 0) return
         setNewQuiz([{_id: "tid", title: ""}])
         setEditQuizTitle(true);
-        setSelectedQuizIndex(quizzes.length)
+        setSelectedQuiz({
+            index: quizzes.length,
+            id: "tid"
+        })
     }
 
     const handleTitleChange = (quizId, e) => {
@@ -103,7 +106,6 @@ const ListsCard = (props) => {
     //error handling
     useEffect(() => {
         if (error) {
-            console.log({error})
             gsap.to(errorRef.current, {opacity: 1, duration: .2})
             gsap.to(errorRef.current, {
                 opacity: 0, 
@@ -113,6 +115,7 @@ const ListsCard = (props) => {
             })
         }
     }, [error])
+
 
     return (
         <CardWrapper>
@@ -132,44 +135,50 @@ const ListsCard = (props) => {
                 <SubListsCard   
                     setError={setError}
                     resetStates={resetStates}
-                    selectedQuizIndex={selectedQuizIndex}
+                    selectedQuiz={selectedQuiz}
                     infoPage={infoPage}
                 /> 
             </Transition>
-
+                
             <ListContainer>
                 {quizzes && !isLoading && isMounted ? [...quizzes, ...newQuiz ].map((quiz, index) => (  
+                       
                         <ListItem 
                             key={quiz._id}
                             className={"sub-lists-card-ignore"}
-                            ref={selectedQuizIndex === index && !infoPage 
+                            ref={selectedQuiz.index === index && !infoPage 
                                 ? listItemRef 
                                 : null
                             }
-                            selected={selectedQuizIndex === index}
-                            onClick={() => setSelectedQuizIndex(index)}>
+                            selected={selectedQuiz.index === index}
+                            onClick={() => setSelectedQuiz({
+                                id: quiz._id,
+                                index
+                            })}>
 
                             <form onSubmit={e => handleTitleChange(quiz._id, e)}>
-                                {editQuizTitle && index === selectedQuizIndex 
+                                {editQuizTitle && index === selectedQuiz.index
                                     ? <StyledInput 
                                         ref={inputRef} 
+                                        autoCorrect={false}
                                         onChange={e => setQuizTitleValue(e.target.value)} 
                                         value={quizTitleValue} 
                                         /> 
                                     : quiz.title
                                 }
-                                { editQuizTitle && index === selectedQuizIndex && 
+                                { editQuizTitle && index === selectedQuiz.index && 
                                     <CheckCircleBtn>
                                         <faRegular.CheckCircle size={"1rem"} title={"change title"} />
                                     </CheckCircleBtn>
                                 }
                             </form>
+                    
                             <IconContainer disabled={isLoading || quiz._id === "tid"}>
                                 <faRegular.Edit size={"1.2rem"} title={"Edit verb quiz title"} onClick={() => setEditQuizTitle(prev => !prev)} /> 
                                 <faRegular.ListAlt size={"1.2rem"} title={`Contents of ${quiz.title}`} onClick={() => setInfoPage("list")} />
                                 <faSolid.ChartLine size={"1.2rem"} title={"Analytics"} onClick={() => setInfoPage("analytics")} />
                             </IconContainer>
-                            { index === selectedQuizIndex && !editQuizTitle && !infoPage && 
+                            { index === selectedQuiz.index && !editQuizTitle && !infoPage && 
                                 <faSolid.TrashAlt 
                                     onClick={() => deleteQuiz(quiz._id)}  
                                     size={"1rem"} style={{position: "absolute", right: "-1.25rem", color: "#40a8c4"}} 
@@ -191,8 +200,18 @@ const ListsCard = (props) => {
                         {error}
                     </ErrorContainer>
                 : null}
-                <Button size={"small"} variant={"secondary"} onClick={handleNewList}>New Quiz</Button>
-                <Button size={"small"} to={"/config"} onClick={handleLoadList}>Load Quiz</Button>
+                <Button  size={"small"} variant={"secondary"} onClick={handleNewList}>New Quiz</Button>
+                <Button 
+                        size={"small"} 
+                        to={{
+                            pathname: "/config",
+                            state: {selectedQuizId: selectedQuiz.id}
+                        }}
+                        disabled={isNaN(selectedQuiz.index) || selectedQuiz.id === "tid"}
+                        onClick={handleLoadList}>
+                    Load Quiz
+                </Button>
+
             </CardFooter>
 
         </CardWrapper>
