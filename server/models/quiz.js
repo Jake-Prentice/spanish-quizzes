@@ -11,7 +11,10 @@ const quizConfigSchema = {
                         tense: String, 
                         _id: false,
                         pronouns: {
-                            type: [{pronoun: String, _id: false}],
+                            type: [{
+                                pronoun: String, 
+                                _id: false
+                            }],
                             default: undefined
                         }
                     }],
