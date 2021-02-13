@@ -29,7 +29,7 @@ const SelectCard = forwardRef((props, ref) => {
                 ? options.map((option, index) => (
                  
                         <SelectCardOption 
-                    
+                            isHighlighted={option?.isHighlighted === true}
                             ref={selectedOptionIndex === index ? optionRef : null} //only have alerter if selected
                             onContextMenu={e => {
                                 e.preventDefault(); 
@@ -39,7 +39,7 @@ const SelectCard = forwardRef((props, ref) => {
                             isSelected={selectedOptionIndex === index}
                             className={"ignore-select-options"}
                             onClick={() => {
-                                onClickOption(index);
+                                onClickOption && onClickOption(index);
                             }}
                         >
                             {option.content}

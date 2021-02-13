@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Route, useLocation} from "react-router-dom"
+import {Route, useLocation, useRouteMatch} from "react-router-dom"
 //components
 import ConfigPage from "./ConfigPage";
 import QuizPage from "./QuizPage";
@@ -10,15 +10,17 @@ import {
 }from "./style"
 
 const MainCard = (props) => {
-
+    
     return (
-        <MainCardContainer currentPage={useLocation().pathname}>
-            <Route exact path={"/"}>
-                This is the home page
-            </Route>
-            <Route exact path={"/config"} component={ConfigPage} />
-            <Route exact path={"/quiz"} component={QuizPage} />
-        </MainCardContainer>
+        <div style={{position: "relative"}}>
+            <MainCardContainer {...useLocation()}>
+                <Route exact path={"/"}>
+                    This is the home page
+                </Route>
+                <Route path={"/config/:id"} component={ConfigPage} />
+                <Route exact path={"/quiz"} component={QuizPage} />
+            </MainCardContainer>
+        </div>
     )
 }
 

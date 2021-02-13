@@ -3,23 +3,28 @@ import SelectCard from "../SelectCard";
 import {ACTIONS} from "../../useQuizConfigReducer"
 
 const MoodCard = (props) => {
+    const {selected} = props;
     
     return (
         <SelectCard 
+            defaultNumOfOptions={6}
             options={props.options}
-            selectedOptionIndex={props.selectedMoodIndex}
+            selectedOptionIndex={selected.moodIndex}
             onClickOption={index => props.dispatch({
                 type: ACTIONS.SELECT_MOOD_OPTION, 
                 payload: {index}
             })}
-            onClickOffOption={typeof props.selectedTenseIndex !== "number"  // false means it's disabled
+            onClickOffOption={typeof selected.tenseIndex !== "number"  // false means it's disabled
                 ? () => props.dispatch({
                     type: ACTIONS.DESELECT_MOOD_OPTION
                 })
                 : false
             }
-            onRightClickOption={() => props.dispatch({
-                type: ACTIONS.ADD_MOOD_TO_CONFIG
+            onRightClickOption={index => props.dispatch({
+                type: ACTIONS.ADD_MOOD_TO_CONFIG,
+                payload: {
+                    moodIndex: index
+                }
             })}
         />
     )

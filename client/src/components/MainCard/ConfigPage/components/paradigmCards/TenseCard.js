@@ -4,11 +4,11 @@ import {ACTIONS} from "../../useQuizConfigReducer"
 import useClickOutside from "hooks/useClickOutside";
 
 const TenseCard = (props) => {
-
+    const {selected} = props;
     return (
         <SelectCard 
-            options={props.options?.[props.selectedMoodIndex]?.children}
-            selectedOptionIndex={props.selectedTenseIndex}
+            options={props.options?.[selected.moodIndex]?.children}
+            selectedOptionIndex={selected.tenseIndex}
             onClickOption={index => props.dispatch({
                 type: ACTIONS.SELECT_TENSE_OPTION, 
                 payload: {index}
@@ -16,11 +16,17 @@ const TenseCard = (props) => {
             onClickOffOption={() => props.dispatch({
                 type: ACTIONS.DESELECT_TENSE_OPTION
             })}
-            onRightClickOption={() => props.dispatch({
-                type: ACTIONS.ADD_TENSE_TO_CONFIG
+            onRightClickOption={index => props.dispatch({
+                type: ACTIONS.ADD_TENSE_TO_CONFIG,
+                payload: {
+                    tenseIndex: index
+                }
             })}
         />
     )
 }
 
 export default TenseCard;
+
+
+

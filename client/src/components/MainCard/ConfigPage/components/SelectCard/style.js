@@ -1,4 +1,11 @@
-import styled, {css} from "styled-components";
+import styled, {css, keyframes} from "styled-components";
+
+const selectedBoxShadow = css`
+    box-shadow: 0 0 10px 2px rgba(0,0,0, .3);
+`
+const highlightedBoxShadow = css`
+    box-shadow: 0 0 0 1.5px white;
+`
 
 export const SelectCardOption = styled.div`
     width: 90%;
@@ -13,15 +20,19 @@ export const SelectCardOption = styled.div`
     cursor: pointer;
     box-shadow: 0 0 3px 1px rgba(0,0,0, .25);
     color: white;
-
-    ${props => props.isHighlighted && css`
-        border: 1.5px dashed white;
-    `}
+    font-size: 14px;
+    transition: transform 0.05s linear, filter 0.2s ease;
     
     ${props => props.isSelected && css`
-         box-shadow: 0 0 10px 2px rgba(0,0,0, .3);
-         background: #5f5a74;
-         
+        ${selectedBoxShadow}
+        transform: scale(1.02) translateX(5px);
+        border-left: 5px solid #9583d8;
+        
+    `}
+
+    ${props => props.isHighlighted && css`
+        
+        ${highlightedBoxShadow}
     `}
 
     :hover {
@@ -39,7 +50,7 @@ export const SelectCardWrapper = styled.div`
     align-items: center;
     flex-direction: column;
     padding: 1.875em 0.5em 2.8125em;
-    font-size: 14px;
+    
     box-shadow: 0 0 8px 2px rgba(0,0,0, .25);
     user-select: none;  /* maybe only for ipads, phones */ 
  

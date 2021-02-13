@@ -1,10 +1,8 @@
 import styled from "styled-components";
 import {SelectCardWrapper} from "./components/SelectCard/style";
 import {StyledButton} from "components/shared/Button/style";
+import Button from "components/shared/Button";
 
-export const ConfigPageWrapper = styled.div`
-
-`   
 
 export const CardContainer = styled.div`
     display: flex;
@@ -18,7 +16,6 @@ export const CardContainer = styled.div`
     }
 `
 
-
 export const ScrollContainer = styled.div`
     display: flex;
     align-items: center;
@@ -26,7 +23,6 @@ export const ScrollContainer = styled.div`
     flex-wrap: nowrap;
     flex: 1;
     overflow: auto;
-    /* border-bottom: 10px solid #605d6f; */
     scrollbar-width: thin;
     position: relative;
 
@@ -48,6 +44,17 @@ export const ScrollContainer = styled.div`
   
 `
 
+export const StartButton = styled(Button)`
+        font-size: 0.8rem;
+        padding: 0.8em 1.2em;
+        min-width: 6.5em;
+        min-height:3em;
+        border-radius: 8px;
+        background: ${props => props.theme.colors.burntSienna};
+        color: white;
+        letter-spacing: 1.8px;
+`
+
 export const FooterContainer = styled.div`
     display: flex;
     justify-content: center;
@@ -57,13 +64,11 @@ export const FooterContainer = styled.div`
     background: #3d3a4d;
     overflow: hidden;
     box-shadow: 0 0 0 12px #59566b;
-
-    ${StyledButton} {
-        margin-left: 20px;
-    }
 ;
 
 `
+
+
 
 
 

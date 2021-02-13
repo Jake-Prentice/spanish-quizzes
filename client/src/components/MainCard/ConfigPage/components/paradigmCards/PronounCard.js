@@ -3,12 +3,15 @@ import SelectCard from "../SelectCard";
 import {ACTIONS} from "../../useQuizConfigReducer"
 
 const PronounCard = (props) => {
-
+    const {selected} = props;
     return (
         <SelectCard 
-            options={props.options?.[props.selectedMoodIndex]?.children?.[props.selectedTenseIndex]?.children}
-            onRightClickOption={() => props.dispatch({
-            type: ACTIONS.ADD_PRONOUN_TO_CONFIG
+            options={props.options?.[selected.moodIndex]?.children?.[selected.tenseIndex]?.children}
+            onRightClickOption={index => props.dispatch({
+            type: ACTIONS.ADD_PRONOUN_TO_CONFIG,
+            payload: {
+                pronounIndex: index
+            }
         })}
   
     />

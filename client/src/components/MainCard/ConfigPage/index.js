@@ -1,71 +1,48 @@
 import React, {useEffect, useState, useMemo} from "react";
-import {Redirect, useLocation} from "react-router-dom";
+import {Redirect, useLocation, useParams, Prompt} from "react-router-dom";
 import useStateWithSessionStorage from "hooks/useStateWithSessionStorage";
 import {useQuizzesQuery} from "hooks/useQuizzesQuery"
 //components
 import SaveOptions from "./components/SaveOptions";
+import {Margin} from "components/shared/spacing";
+import {MoodCard, TenseCard, PronounCard} from "./components/paradigmCards";
+
 import {
     ScrollContainer,
     FooterContainer,
-    CardContainer
+    CardContainer,
+    StartButton
 } from "./style";
-import SelectCard from "./components/SelectCard";
-import Button from "components/shared/Button"
-import {MoodCard, TenseCard, PronounCard} from "./components/paradigmCards";
 //hooks
-import useQuizConfigReducer, {ACTIONS} from "components/MainCard/ConfigPage/useQuizConfigReducer";
-
-
-
-
-// <MoodCard {...quizConfigStates} />
-
+import useQuizConfigReducer, {ACTIONS} from "./useQuizConfigReducer";
 
 
 const ConfigPage = (props) => {
 
-    const [quizConfigStates, dispatch] = useQuizConfigReducer();
-    const {options, selectedMoodIndex, selectedTenseIndex} = quizConfigStates;
- 
-    const [loadedQuizId, setLoadedQuizId] = useStateWithSessionStorage("loadedQuizId")
-    const [currentQuizConfig, setCurrentQuizConfig] = useStateWithSessionStorage("currentQuizConfig")
-    const [selectedSaveIndex, setSelectedSaveIndex] = useStateWithSessionStorage("selectedSaveIndex");
-    
     const [shouldRedirect, setShouldRedirect] = useState(false);
-  
-    const {state} = useLocation();
-    
-    //handle redirection if quiz isn't selected
-    useEffect(() => {
-        if (!loadedQuizId && state?.selectedQuizId === undefined) setShouldRedirect(true)
-        else if (loadedQuizId !== state?.selectedQuizId) {
-            setLoadedQuizId(state.selectedQuizId); 
-        }
-    },[state?.selectedQuizId])
+    const quizId = useParams().id;
 
-    
+    useEffect(() => {
+        if (quizId === undefined) setShouldRedirect(true)
+    },[quizId])
+
     const {data, isLoading} = useQuizzesQuery();
 
-    
     const quiz = useMemo(() => {
-        if (!isLoading && !!loadedQuizId) {
-            const found = data.find(obj => obj._id === loadedQuizId);
+        if (!isLoading && !!quizId) {
+            const found = data.find(obj => obj._id === quizId);
             if (!found) {   // if the quiz is deleted
-                sessionStorage.removeItem("loadedQuizId") 
+                sessionStorage.removeItem("quizId") 
                 setShouldRedirect(true);
             }
             else return found;
         }
-    }, [data, loadedQuizId]) 
+    }, [data, quizId]) 
 
- 
-    //cache the selected quiz config
-    useEffect(() => {
-        if (quiz && !isLoading && !isNaN(selectedSaveIndex)) { 
-            setCurrentQuizConfig(JSON.stringify(quiz.configs[selectedSaveIndex])) 
-        }
-    },[selectedSaveIndex])
-
+    const [quizConfigStates, dispatch] = useQuizConfigReducer(
+        quiz?.configs, 
+        quizId
+    );
 
     if (shouldRedirect) return <Redirect to={"/"} />
             
@@ -93,9 +70,18 @@ const ConfigPage = (props) => {
                     {...quizConfigStates}
                     dispatch={dispatch}
                 />
-                <Button className={"save-options-ignore"} variant={"secondary"}>Start</Button>
-                {quiz && !isLoading && <>{quiz.title}</>}
+                <Margin all={"0 20px"} />
+                <StartButton 
+                    to={"/quiz"}
+                    className="save-options-ignore"
+                >
+                    Start
+                </StartButton>
             </FooterContainer>
+            {/* <Prompt 
+                when={true} 
+                message="You have unsaved changes, are you sure you want to leave?"
+            /> */}
        </>
     )
 

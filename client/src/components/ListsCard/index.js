@@ -11,12 +11,13 @@ import {
     ErrorContainer,
 } from "./style";
 import gsap from "gsap";
-//custom hooks
+//hooks
 import {useQuizzesQuery} from "hooks/useQuizzesQuery";
 import useClickOutside from "hooks/useClickOutside";
 import useFocusInput from "hooks/useFocusInput";
 import useQuizMutation from "hooks/mutations/useQuizMutation";
 import useStateWithSessionStorage from "hooks/useStateWithSessionStorage";
+import {useHistory, useLocation, useParams, useRouteMatch} from "react-router-dom";
 //apis
 import {fetchQuizzes} from "api/quiz";
 //components
@@ -26,11 +27,16 @@ import * as faSolid from "@styled-icons/fa-solid";
 import * as faRegular from "@styled-icons/fa-regular";
 import {Transition, TransitionGroup} from "react-transition-group";
 import ItemSkeleton from "./components/ItemSkeleton"
+//
+import {sessionStorageKey} from "components/MainCard/ConfigPage/useQuizConfigReducer";
 
 const ListsCard = (props) => {
 
+    const history = useHistory();
+    const urlMatch = useRouteMatch("/config/:id");
+    
     const {setIsOpen, isMounted} = props;
-
+    
     const [newQuiz, setNewQuiz] = useState([]);
     const [quizTitleValue, setQuizTitleValue] = useState("");
     const [editQuizTitle, setEditQuizTitle] = useState(false);
@@ -69,6 +75,20 @@ const ListsCard = (props) => {
     //events
     const handleLoadList = () => {
         setIsOpen(false);
+        const pathState = {
+            pathname: `/config/${selectedQuiz.id}`, 
+            state: {
+                quizTitle: quizzes?.[selectedQuiz.index]?.title
+            }
+        }
+        
+        if (urlMatch?.isExact && urlMatch?.params.id !== selectedQuiz.id) {
+            sessionStorage.removeItem(sessionStorageKey);
+            history.replace(pathState);
+        }else {
+            history.push(pathState);
+        }
+        
     }
 
     const handleNewList = e => {
@@ -160,7 +180,6 @@ const ListsCard = (props) => {
                                 {editQuizTitle && index === selectedQuiz.index
                                     ? <StyledInput 
                                         ref={inputRef} 
-                                        autoCorrect={false}
                                         onChange={e => setQuizTitleValue(e.target.value)} 
                                         value={quizTitleValue} 
                                         /> 
@@ -203,10 +222,7 @@ const ListsCard = (props) => {
                 <Button  size={"small"} variant={"secondary"} onClick={handleNewList}>New Quiz</Button>
                 <Button 
                         size={"small"} 
-                        to={{
-                            pathname: "/config",
-                            state: {selectedQuizId: selectedQuiz.id}
-                        }}
+                       
                         disabled={isNaN(selectedQuiz.index) || selectedQuiz.id === "tid"}
                         onClick={handleLoadList}>
                     Load Quiz

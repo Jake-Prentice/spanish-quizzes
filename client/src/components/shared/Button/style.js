@@ -34,10 +34,11 @@ export const StyledButton = styled(BaseButton)`
                 `;
             case "medium":
                 return css`
-                    font-size: 0.7rem;
-                    padding: 1em 1.4em;
-                    width: 7em;
-                    height:3em;
+                    font-size: 0.8rem;
+                    padding: 0.8em 1.2em;
+                    min-width: 6.5em;
+                    min-height:3em;
+                    border-radius: 8px;
                 `
             case "large":
                 return css`

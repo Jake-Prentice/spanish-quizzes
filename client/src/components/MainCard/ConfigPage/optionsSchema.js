@@ -1,4 +1,4 @@
-export const options = [
+export const optionsSchema = [
     {content: "Indicative", value: "indicative", children: [
         {content: "Present", value: "present", children: [
             {content: "yo", value: "yo"},
@@ -205,5 +205,5 @@ export const options = [
 
 
 export default {
-    options
+    optionsSchema
 }

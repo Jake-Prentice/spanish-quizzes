@@ -1,4 +1,7 @@
 import styled, {css} from "styled-components";
+import {useRouteMatch} from "react-router-dom";
+
+const borderSize = "7px";
 
 export const MainCardContainer = styled.div`
 
@@ -6,11 +9,10 @@ export const MainCardContainer = styled.div`
     height: 52.5rem;
     max-height: 840px;
     border-radius: 35px;
-    border: 7px solid ${props => props.theme.colors.burntSienna};
-    /* border: 7px solid black; */
+    border: ${borderSize} solid ${props => props.theme.colors.burntSienna};
 
     ${props => {
-        switch(props.currentPage) {
+        switch(props.pathname) {
             case "/":
                 return css`
                     background: white;
@@ -19,7 +21,7 @@ export const MainCardContainer = styled.div`
                     align-items: center;
                     color: black;
                 `
-            case "/config":
+            case useRouteMatch("/config/:id")?.url:
                 return css`
                     background: #322f3d; 
                     display: flex;
@@ -27,7 +29,35 @@ export const MainCardContainer = styled.div`
                     flex-direction: column;
                     overflow: hidden;
 
+                    &::before {
+                        content:"${props => props.state.quizTitle}";
+                        position: absolute;
+                        display: flex;
+                        justify-content: center;
+                        padding: 0 1.5em;
+                        border: 3px solid #9583d8;
+                        border-bottom: none;
+                        align-items: center;
+                        background: #3d3a4d;
+                        left: 0;
+                        transform: translate(50px, calc(-100% - ${borderSize}));
+                        font-size: 0.85rem;
+                        border-top-left-radius: 10px;
+                        border-top-right-radius: 10px;
+                        min-width: 5.5em;
+                        height: 40px;
+                    }
                 `
+
+                case "/quiz":
+                    return css`
+                    
+                        background: #322f3d;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    
+                    `
         }   
     }}
 `;
