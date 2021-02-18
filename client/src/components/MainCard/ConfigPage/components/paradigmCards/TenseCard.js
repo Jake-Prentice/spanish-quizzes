@@ -7,7 +7,7 @@ const TenseCard = (props) => {
     const {selected} = props;
     return (
         <SelectCard 
-            options={props.options?.[selected.moodIndex]?.children}
+            options={selected.options?.[selected.moodIndex]?.children}
             selectedOptionIndex={selected.tenseIndex}
             onClickOption={index => props.dispatch({
                 type: ACTIONS.SELECT_TENSE_OPTION, 

@@ -1,11 +1,12 @@
 import React, {useState} from "react";
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 import * as faRegular from "@styled-icons/fa-regular";
+import {motion} from "framer-motion";
 
 
-const SaveButtonContainer = styled.button`
-    align-self: center; 
-    padding: 0.35em;
+const SaveButtonContainer = styled(motion.button)`
+    
+    padding: 0.37em;
     border-radius: 20%;
     border: none;
     background: #7755f3;
@@ -15,30 +16,53 @@ const SaveButtonContainer = styled.button`
     transition: filter 0.2s ease;
     outline: none;
 
+
     :hover {
         filter: brightness(1.1);
     }
+`
 
-    :disabled {
-        opacity: 0.5;
-        pointer-events: none;
-    }
+const LoadSpinner = styled(motion.div)`
+    border: 3px solid white;
+    border-top: 3px solid #7755f3;
+    border-radius: 50%;
+    padding: 6px;
+    
+`
+
+const Wrapper = styled.div`
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
 `
 
 
-const onSave = () => {
-
-}
-
 const SaveButton = (props) => {
     
+    const {isSavePending} = props;
+
+    const transition = {
+        repeat: Infinity,
+        ease: "linear",
+        duration: 0.5   
+    }
+
     return (
-        <SaveButtonContainer  
-                className={"save-options-ignore"} 
-                onClick={props => onSave(props)}
-        >
-            <faRegular.Save size={"1.1rem"} /> 
-        </SaveButtonContainer>
+        <Wrapper className={"save-options-ignore"} >
+        {!isSavePending ? (
+            <SaveButtonContainer {...props}>
+                <faRegular.Save size={"1.1rem"} /> 
+            </SaveButtonContainer>
+            )
+            : (
+                <LoadSpinner 
+                    animate={{rotate: 360}}
+                    transition={transition}
+                />
+            )}
+        </Wrapper>
     )
 }
 

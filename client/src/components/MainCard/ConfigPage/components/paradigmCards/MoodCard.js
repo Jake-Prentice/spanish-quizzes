@@ -8,7 +8,7 @@ const MoodCard = (props) => {
     return (
         <SelectCard 
             defaultNumOfOptions={6}
-            options={props.options}
+            options={selected.options}
             selectedOptionIndex={selected.moodIndex}
             onClickOption={index => props.dispatch({
                 type: ACTIONS.SELECT_MOOD_OPTION, 

@@ -67,62 +67,83 @@ export const addParadigmToConfig = (selected, highlighted) => {
     let path = [moodIndex, tenseIndex].filter(selectedIndex => selectedIndex !== null);
     path.length = Object.keys(states).findIndex(state => state === highlighted.paradigm);
 
-    const intendedLevel = path.length;
-
+    const intendedLevel = path.push(highlighted.index) - 1;
+    
     const recurse = (configsRef, optionsRef, currentLevel=0) => {
-
         const paradigm = Object.keys(states)[currentLevel]
         const nextParadigms = states[paradigm].next;
+  
+        const currentOption = optionsRef[path[currentLevel]];
+
+        let configIndex = configsRef.findIndex(config => config[paradigm] === currentOption.value)
+
+        console.log({[paradigm]: currentOption.value})
+        if (intendedLevel !== currentLevel) { 
         
-        if (intendedLevel !== currentLevel) {
+            configIndex = configIndex === -1 
+                ? configsRef.push({ [paradigm]: currentOption.value, [nextParadigms]: [] }) - 1
+                : configIndex
+    
+            if (!configsRef[configIndex][nextParadigms]) {
+                currentOption.isHighlighted = false;
+                const nextParadigm = Object.keys(states)[currentLevel + 1];
 
-            const currentOption = optionsRef[path[currentLevel]];
-            
-            let currentConfigIndex = configsRef.findIndex(config => config[paradigm] === currentOption.value)
-            
-            if (currentOption.isHighlighted) currentOption.isHighlighted = false;
-            
-            currentConfigIndex = currentConfigIndex !== -1 
-                ? currentConfigIndex 
-                : configsRef.push({ [paradigm]: currentOption.value, [nextParadigms]: [] }) - 1  //pushing returns length of array
-
-            //create path to recurse down
-            if (!configsRef[currentConfigIndex]?.[nextParadigms]) {
-                configsRef[currentConfigIndex][nextParadigms] = [];
+                configsRef[configIndex][nextParadigms] = currentOption.children.map(option => ( 
+                    {[nextParadigm]: option.value}
+                ))
             }
 
             recurse(
-                configsRef[currentConfigIndex][nextParadigms], 
+                configsRef[configIndex][nextParadigms], 
                 currentOption.children,
                 ++currentLevel
             )
             
         }else {
 
-            const highlightedOption = optionsRef[highlighted.index];
-            const foundParadigmIndex = configsRef.findIndex(config => config[paradigm] === highlightedOption.value)
-   
             const updated = {
-                [paradigm]: highlightedOption.value
+                [paradigm]: currentOption.value
             }
 
-            highlightedOption.isHighlighted = !highlightedOption.isHighlighted;
+            currentOption.isHighlighted = !currentOption.isHighlighted;
             
-            if (highlightedOption.children) {
-                traverseEachObj(highlightedOption.children, option => 
-                    option.isHighlighted = highlightedOption.isHighlighted
+            if (currentOption.children) {
+                traverseEachObj(currentOption.children, option => 
+                    option.isHighlighted = currentOption.isHighlighted
                 )
             }
 
-            if (foundParadigmIndex !== -1) {
-                if (configsRef[foundParadigmIndex][nextParadigms]) configsRef[foundParadigmIndex] = updated;
-                else configsRef.splice(foundParadigmIndex, 1);
+            if (configIndex !== -1) {
+                if (configsRef[configIndex][nextParadigms]) configsRef[configIndex] = updated;
+                else configsRef.splice(configIndex, 1);
             }else {
-                console.log(optionsRef.length, configsRef.length);
-                configsRef.push(updated)
+                configIndex = configsRef.push(updated) - 1
             }
             
         }
+
+        if (!!configsRef?.[configIndex]?.[nextParadigms]) { 
+
+            const nextConfigs = configsRef[configIndex]?.[nextParadigms];
+            const nextOptions = currentOption?.children;
+
+            if (nextConfigs?.length === 0) {
+                configsRef.splice(configIndex, 1);
+            }
+            else if (nextConfigs.length === nextOptions.length) {
+    
+                if (nextConfigs.reduce((accumulator, currentValue) => {
+                    if (!currentValue[states[Object.keys(states)[currentLevel]].next]) {
+                        return accumulator + 1;
+                    }
+                 }, 0) === nextOptions.length) {
+                     configsRef[configIndex] = {[paradigm]: currentOption.value}
+                        currentOption.isHighlighted = true;
+                 }
+
+            }
+        }
+
 
     }
 

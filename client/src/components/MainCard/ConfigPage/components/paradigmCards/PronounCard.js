@@ -6,7 +6,7 @@ const PronounCard = (props) => {
     const {selected} = props;
     return (
         <SelectCard 
-            options={props.options?.[selected.moodIndex]?.children?.[selected.tenseIndex]?.children}
+            options={selected.options?.[selected.moodIndex]?.children?.[selected.tenseIndex]?.children}
             onRightClickOption={index => props.dispatch({
             type: ACTIONS.ADD_PRONOUN_TO_CONFIG,
             payload: {

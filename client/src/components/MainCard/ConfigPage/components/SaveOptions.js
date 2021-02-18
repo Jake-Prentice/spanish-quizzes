@@ -1,22 +1,29 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import styled from "styled-components";
 import useClickOutside from "hooks/useClickOutside";
 import {ACTIONS} from "../useQuizConfigReducer";
 import SaveButton from "./SaveButton";
 import {Margin} from "components/shared/spacing";
+import isEqual from "lodash.isequal";
+import {updateQuizConfig} from "api/quiz";
+import {useQueryClient} from "react-query";
+import {Transition} from "react-transition-group";
+import {motion} from "framer-motion";
 
 const numOfSaveOptions = 5;
+
 
 
 const Wrapper = styled.div`
     display: flex;
     width: 200px;
+    height: 40px;
     /* border: 1px solid white; */
 `
 
+
 const SaveOptionsContainer = styled.div`
     flex-basis: 80%;
-    height: 40px;
     border-radius: 8px;
     background-color: rgb(76, 73, 97);
     display: flex;
@@ -38,6 +45,7 @@ const SaveOptionButton = styled.button`
     color: white;
     font-size:  12px;
     transition: filter 0.2s ease, opacity 0.3s ease;
+    
 
     :disabled {
         opacity: 0.5;
@@ -48,10 +56,20 @@ const SaveOptionButton = styled.button`
     }
 `
 
+
+const saveNewConfigs = async (newConfigs) => {
+    for (const newConfig of newConfigs) {
+        await updateQuizConfig(newConfig);
+    }
+}
+
+
+
 const SaveOptions = (props) => {
     const {selected} = props;
+    const queryClient = useQueryClient();
     
-    const [isLoading, setIsLoading] = useState(false)
+    const [isSavePending, setIsSavePending] = useState(false)
     
     const [saveOptionRef] = useClickOutside(() => props.dispatch({
         type: ACTIONS.RESET_SAVE_OPTION
@@ -59,13 +77,31 @@ const SaveOptions = (props) => {
         ignoreByAttr: ".save-options-ignore"
     });
 
+
+    useEffect(() => {
+        if (props.quiz && isSavePending) {
+            const newConfigs = props.configs.filter((newConfig, index) => !isEqual(newConfig, props.quiz.configs[index]))
+            if (newConfigs.length !== 0) {
+                (async() => {
+                    await saveNewConfigs(newConfigs)
+                    await queryClient.invalidateQueries("quizzes");
+                    setIsSavePending(false);
+                })()  
+            }else {
+                setTimeout(() => {
+                    setIsSavePending(false);
+                }, 500)
+            }
+        }
+    },[isSavePending])
+
     return (
         <Wrapper>
             <SaveOptionsContainer>
                 {Array.from(Array(numOfSaveOptions)).map((_, index) => (
                     <SaveOptionButton
                         className={"save-options-ignore"}
-                        disabled={isLoading}
+                        disabled={isSavePending}
                         ref={selected.saveIndex === index ? saveOptionRef : null}
                         isSelected={index === selected.saveIndex}
                         onClick={() => props.dispatch({
@@ -79,11 +115,11 @@ const SaveOptions = (props) => {
                 ))}
                 
             </SaveOptionsContainer>    
-            <Margin all={"0 5px"} />
             <SaveButton 
-                
-                setIsLoading={setIsLoading}
-            />    
+                onClick={() => setIsSavePending(true)}
+                isSavePending={isSavePending}
+            />
+                       
         </Wrapper>
     )
 }

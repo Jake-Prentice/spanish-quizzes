@@ -68,6 +68,7 @@ const ConfigPage = (props) => {
             <FooterContainer className={"ignore-select-options"}>
                 <SaveOptions 
                     {...quizConfigStates}
+                    quiz={quiz}
                     dispatch={dispatch}
                 />
                 <Margin all={"0 20px"} />

@@ -25,7 +25,7 @@ export const SelectCardOption = styled.div`
     
     ${props => props.isSelected && css`
         ${selectedBoxShadow}
-        transform: scale(1.02) translateX(5px);
+        transform: scale(1.01) translateX(5px);
         border-left: 5px solid #9583d8;
         
     `}

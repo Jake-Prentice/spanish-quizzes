@@ -155,16 +155,17 @@ const useQuizConfigReducer = (quizConfigs, quizId) => {
         sessionStorage.setItem(sessionStorageKey, JSON.stringify(state))
     },[state])  
 
-    const {options, ...current} = 
+    const current = 
         state.quizConfigs?.fromSelectedSave?.[state.selectedSaveIndex] 
         || state.quizConfigs.default;
     
+   
     return [{
         selected: {
             ...current,
             saveIndex: state.selectedSaveIndex
         },
-        options
+        configs: state.quizConfigs.fromSelectedSave.map(({config}) => config)
     }, dispatch]
 
 }
