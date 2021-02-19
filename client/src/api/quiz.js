@@ -58,3 +58,11 @@ export const deleteVerbFromQuiz = async ({quizId, verbId}) => {
         return res.data;
     }catch(err) {throw new Error(err.response.data)}
 }
+
+export const updateQuizConfig = async (newConfig) => {
+    try {
+        const res = await axios.put(`/quiz-configs/edit/${newConfig._id}`, {newConfig});
+        // /quiz/configs/:id
+        return res.data;
+    }catch(err) {throw new Error(err.response.data)}
+}

@@ -18,6 +18,10 @@ export const SubListsCardWrapper = styled.div`
     font-family: sans-serif;
     box-shadow: 0 0 5px rgba(0,0,0,.5);
     border: 6px solid #4b5d67;
+
+    @media (max-width: 450px) {
+        left: 0;
+    }
 `;
 
 export const SubListsCardFooter = styled.div`

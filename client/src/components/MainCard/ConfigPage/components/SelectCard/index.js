@@ -1,6 +1,8 @@
 import React, {useState, forwardRef} from "react";
 import {SelectCardWrapper, SelectCardOption} from "./style";
 import useClickOutside from "hooks/useClickOutside";
+import useSimpleAndDoubleClick from "hooks/useSimpleAndDoubleClick";
+import {isMobile} from "react-device-detect";
 
 const SelectCard = forwardRef((props, ref) => {
     const {
@@ -16,12 +18,20 @@ const SelectCard = forwardRef((props, ref) => {
         ...rest
     } = props;
 
+
+    
     const [optionRef] = useClickOutside(() => {
         onClickOffOption && onClickOffOption();
     }, {
         ignoreByAttr: ".ignore-select-options",
         isDisabled: typeof onClickOffOption === "boolean" && onClickOffOption === false
     }) 
+
+
+    const onClick = useSimpleAndDoubleClick({
+        onClick: () => console.log("clicked"),
+        onDoubleClick: () => console.log
+    })
 
     return (
         <SelectCardWrapper isDisabled={!options} {...rest}> 

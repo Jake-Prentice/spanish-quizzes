@@ -1,5 +1,6 @@
 import styled, {css} from "styled-components";
 import {useRouteMatch} from "react-router-dom";
+import {isMobile} from "react-device-detect";
 
 const borderSize = "7px";
 
@@ -10,6 +11,13 @@ export const MainCardContainer = styled.div`
     max-height: 840px;
     border-radius: 35px;
     border: ${borderSize} solid ${props => props.theme.colors.burntSienna};
+
+    @media (max-width: 450px) {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        border: none;
+    }
 
     ${props => {
         switch(props.pathname) {
@@ -47,6 +55,9 @@ export const MainCardContainer = styled.div`
                         min-width: 5.5em;
                         height: 40px;
                     }
+                    
+                   
+                    
                 `
 
                 case "/quiz":

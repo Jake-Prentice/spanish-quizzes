@@ -70,6 +70,7 @@ export const addParadigmToConfig = (selected, highlighted) => {
     const intendedLevel = path.push(highlighted.index) - 1;
     
     const recurse = (configsRef, optionsRef, currentLevel=0) => {
+
         const paradigm = Object.keys(states)[currentLevel]
         const nextParadigms = states[paradigm].next;
   
@@ -77,11 +78,14 @@ export const addParadigmToConfig = (selected, highlighted) => {
 
         let configIndex = configsRef.findIndex(config => config[paradigm] === currentOption.value)
 
-        console.log({[paradigm]: currentOption.value})
+        const updatedConfig = {
+            [paradigm]: currentOption.value
+        }
+
         if (intendedLevel !== currentLevel) { 
         
             configIndex = configIndex === -1 
-                ? configsRef.push({ [paradigm]: currentOption.value, [nextParadigms]: [] }) - 1
+                ? configsRef.push({...updatedConfig, [nextParadigms]: [] }) - 1
                 : configIndex
     
             if (!configsRef[configIndex][nextParadigms]) {
@@ -101,10 +105,6 @@ export const addParadigmToConfig = (selected, highlighted) => {
             
         }else {
 
-            const updated = {
-                [paradigm]: currentOption.value
-            }
-
             currentOption.isHighlighted = !currentOption.isHighlighted;
             
             if (currentOption.children) {
@@ -114,10 +114,10 @@ export const addParadigmToConfig = (selected, highlighted) => {
             }
 
             if (configIndex !== -1) {
-                if (configsRef[configIndex][nextParadigms]) configsRef[configIndex] = updated;
+                if (configsRef[configIndex][nextParadigms]) configsRef[configIndex] = updatedConfig;
                 else configsRef.splice(configIndex, 1);
             }else {
-                configIndex = configsRef.push(updated) - 1
+                configIndex = configsRef.push(updatedConfig) - 1
             }
             
         }
@@ -131,14 +131,17 @@ export const addParadigmToConfig = (selected, highlighted) => {
                 configsRef.splice(configIndex, 1);
             }
             else if (nextConfigs.length === nextOptions.length) {
-    
-                if (nextConfigs.reduce((accumulator, currentValue) => {
+                //embrace the bug
+                //check to see if each config actually has a next level
+                const actualLength = nextConfigs.reduce((accumulator, currentValue) => { 
                     if (!currentValue[states[Object.keys(states)[currentLevel]].next]) {
                         return accumulator + 1;
                     }
-                 }, 0) === nextOptions.length) {
-                     configsRef[configIndex] = {[paradigm]: currentOption.value}
-                        currentOption.isHighlighted = true;
+                 }, 0)
+
+                if (actualLength === nextOptions.length) {
+                    configsRef[configIndex] = updatedConfig
+                    currentOption.isHighlighted = true;
                  }
 
             }
@@ -148,7 +151,7 @@ export const addParadigmToConfig = (selected, highlighted) => {
     }
 
     recurse(config.filterOptions.moods, options);
-    // console.log(JSON.stringify(config))
+
 }
 
 

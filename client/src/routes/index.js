@@ -1,7 +1,7 @@
 import React from 'react';
 import Home from "./Home/"
 import theme from "components/shared/theme"
-import {BrowserRouter, Route} from "react-router-dom";
+import {BrowserRouter, Route, useLocation} from "react-router-dom";
 import {ThemeProvider} from "styled-components";
 import {GlobalStyle} from "./style"
 import {QueryClient, QueryClientProvider} from "react-query";

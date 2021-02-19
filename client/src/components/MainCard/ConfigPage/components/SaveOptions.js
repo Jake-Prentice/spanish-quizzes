@@ -82,7 +82,9 @@ const SaveOptions = (props) => {
         if (props.quiz && isSavePending) {
             const newConfigs = props.configs.filter((newConfig, index) => !isEqual(newConfig, props.quiz.configs[index]))
             if (newConfigs.length !== 0) {
+                
                 (async() => {
+                    console.log("here")
                     await saveNewConfigs(newConfigs)
                     await queryClient.invalidateQueries("quizzes");
                     setIsSavePending(false);

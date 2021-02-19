@@ -22,6 +22,7 @@ export const SelectCardOption = styled.div`
     color: white;
     font-size: 14px;
     transition: transform 0.05s linear, filter 0.2s ease;
+    touch-action: manipulation;
     
     ${props => props.isSelected && css`
         ${selectedBoxShadow}

@@ -19,6 +19,7 @@
     "lodash.isequal": "^4.5.0",
     "react": "^16.14.0",
     "react-content-loader": "^5.1.4",
+    "react-device-detect": "^1.15.0",
     "react-dom": "^16.14.0",
     "react-error-boundary": "^3.1.0",
     "react-loading-skeleton": "^2.1.1",

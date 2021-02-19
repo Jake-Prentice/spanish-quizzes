@@ -138,7 +138,7 @@ const ListsCard = (props) => {
 
 
     return (
-        <CardWrapper>
+        <CardWrapper {...props}>
             <Transition
                 in={infoPage !== ""}
                 timeout={400}

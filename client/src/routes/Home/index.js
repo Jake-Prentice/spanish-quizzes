@@ -25,7 +25,7 @@ const Home = () => {
         <HomeWrapper>
             <MainCard /> 
             <SvgWaveTop />
-            <ListSideBar/> {/*render at top */}
+            <ListSideBar /> {/*render at top */}
         </HomeWrapper>
 
     )
