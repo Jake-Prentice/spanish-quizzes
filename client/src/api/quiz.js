@@ -28,41 +28,43 @@ export const deleteQuiz = async quizId => {
     }catch(err) {throw new Error(err.response.data)} 
 }
 
-export const fetchVerbsFromQuizzes = async () => {
-    try {
-        const res = await axios.get(`/quizzes/all/verbs`);
-        return res.data
-    }catch(err) {throw new Error(err.response.data)}
-    
-}
 
 export const addVerbToQuiz = async ({quizId, verb}) => {
     try {
-        console.log({verb})
         const res = await axios.post(`/quizzes/${quizId}/verbs`, {verb});
         return res.data;
     }catch(err) {throw new Error(err.response.data)}
 }
 
-export const updateVerbFromQuiz = async ({quizId, verbId, newVerb}) => {
+export const updateVerbFromQuiz = async ({verbId, newVerb}) => {
     try {
-        
-        const res = await axios.patch(`/quizzes/${quizId}/verbs/${verbId}`, {verb: newVerb})
+        const res = await axios.patch(`/quizzes/all/verbs/${verbId}`, {verb: newVerb})
         return res.data;
     }catch(err) {throw new Error(err.response.data)}
 }
 
-export const deleteVerbFromQuiz = async ({quizId, verbId}) => {
+export const deleteVerbFromQuiz = async ({verbId}) => {
     try{
-        const res = await axios.delete(`/quizzes/${quizId}/verbs/${verbId}`);
+        const res = await axios.delete(`/quizzes/all/verbs/${verbId}`);
         return res.data;
     }catch(err) {throw new Error(err.response.data)}
 }
 
 export const updateQuizConfig = async (newConfig) => {
     try {
-        const res = await axios.put(`/quiz-configs/edit/${newConfig._id}`, {newConfig});
-        // /quiz/configs/:id
+        const res = await axios.put(`/quizzes/all/configs/${newConfig._id}`, {newConfig});
         return res.data;
+    }catch(err) {throw new Error(err.response.data)}
+}
+
+export const configureQuizByConfigId = async (id) => {
+    try{
+
+    }catch(err) {throw new Error(err.response.data)}
+}
+
+export const configureQuizById = async (quizId) => {
+    try{
+
     }catch(err) {throw new Error(err.response.data)}
 }

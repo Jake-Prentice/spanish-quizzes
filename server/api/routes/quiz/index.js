@@ -1,16 +1,16 @@
 const express = require("express");
-const {ErrorHandler} = require("../../helpers/error");
-const config = require("../../config");
+const {ErrorHandler} = require("../../../helpers/error");
+const config = require("../../../config");
 //routers
-const quizRouter = express.Router();
-const verbRouter = express.Router({mergeParams: true}); //so you can access params from the parent
+const router = express.Router();
+const configRouter = require("./config");
 //models
-const Quiz = require("../../models/quiz");
-const VerbData = require("../../models/verbData");
+const Quiz = require("../../../models/quiz");
+const VerbData = require("../../../models/verbData");
 //middlewares 
-const middlewares = require("../middlewares");
+const middlewares = require("../../middlewares");
 //services
-const quizService = require("../../services/quiz");
+const quizService = require("../../../services/quiz");
 
 const isOriginal = async (req,res,next) => {
     const foundQuiz = await Quiz.find({title: req.body.title})
@@ -18,9 +18,10 @@ const isOriginal = async (req,res,next) => {
     next();
 };
 
-quizRouter.use("/:quizId/verbs", verbRouter);
 
-quizRouter.route("/")
+router.use("/", configRouter);
+
+router.route("/")
 
     .get(async (req,res,next) => {
         try {
@@ -45,7 +46,7 @@ quizRouter.route("/")
         }catch(err) {next(err)}
     })
 
-quizRouter.route("/:quizId")
+router.route("/:quizId")
 
     .patch(isOriginal, async (req,res,next) => {
         try {
@@ -63,41 +64,36 @@ quizRouter.route("/:quizId")
         } catch(err) {next(err)}
     })
     
-//verb router
-verbRouter.route("/")
 
-    .get(async (req,res,next) => {
-        try {
-            if (req.params.quizId === "all") {
-                const quizzes = await Quiz.find({});
-                res.json(quizzes.map(quiz => quiz.verbs));
-            }
-        }catch(err) {next(err)}
-    })
+
+
+router.route("/:quizId/verbs")
 
     .post(middlewares.attachCurrentVerb, async (req,res,next) => {
         try { 
             const quizId = req.params.quizId;   
             const verb = req.verb;
 
-            await quizService.addVerbToQuiz({quizId, verb});
+            await Quiz.findOneAndUpdate(
+                {_id: quizId}, {$push: {verbs: {verb} }}
+            )  
 
             res.status(201).end();
         }catch(err) {next(err)}
 
     })
     
-verbRouter.route("/:verbId?")
+router.route("/all/verbs/:verbId?")
 
     .patch(async (req,res,next) => {
         try {
-            const {quizId, verbId} = req.params;
+            const {verbId} = req.params;
             const verb = req.body.verb;
 
             if (!verb) throw new ErrorHandler(400, "please enter a verb!")
             
             await Quiz.updateOne(
-                {_id: quizId, "verbs._id": verbId}, 
+                {"verbs._id": verbId}, 
                 {"$set": {"verbs.$.verb" : verb}}
             )
             res.status(200).end();
@@ -106,15 +102,17 @@ verbRouter.route("/:verbId?")
 
     .delete(async (req,res,next) => {
         try{
-            const {quizId, verbId} = req.params; 
-            console.log("delete", quizId, verbId)
+            const {verbId} = req.params; 
             res.json(await Quiz.updateOne(
-                { _id: quizId}, 
+                { "verbs._id": verbId}, 
                 { "$pull": { "verbs": { "_id": verbId } }}, 
                 { safe: true, multi:false })
             )
 
         }catch(err) {next(err)}
     })
+
+
+
     
-module.exports = quizRouter; 
+module.exports = router; 

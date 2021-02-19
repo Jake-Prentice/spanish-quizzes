@@ -11,7 +11,8 @@ const getVerbData = async (verb) => {
         .replace("window.SD_COMPONENT_DATA = ", "")
         .replace(/;+/g, "")
     )
-      
+    
+    console.log(componentData);
     return {
         conjugations: componentData.verb.paradigms,
         translation: componentData.resultCardHeaderProps.headwordAndQuickdefsProps.quickdef1.displayText

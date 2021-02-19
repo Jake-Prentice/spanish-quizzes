@@ -8,6 +8,7 @@ const quizService = require("./services/quiz");
 const spanishDict = require("./helpers/spanishDict");
 const fs = require("fs");
 const {addVerb} = require("./services/verbData");
+const {getVerbData} = require("./helpers/spanishDict");
 const app = express();
 const Quiz = require("./models/quiz");
 const config = require("./config");
@@ -31,46 +32,12 @@ mongoose.connection.on("error", () => {
 //routes
 app.use("/api", routes); 
 
-app.get("/do-it", async (req,res) => {
-    const config = { 
-        filterOptions: {
-            moods: [
-                {mood: "indicative"},
-                {mood: "subjunctive"},
-                {mood: "impertative"},
-                {mood: "present-continuous"},
-
-            ]
-        }
-    }
-
-   res.json(await quizService.configureQuizByConfigId("600c5a3770aac84948bae2e2"))
+app.get("/do-it/:id", async (req,res) => {
+    res.json(await getVerbData("arrepentirse"))
 })
 
-app.get("/add", async (req,res) => {
-    const newQuiz = new Quiz({
-        title: "test-6",
-        configs: [
-            {
-                filterOptions: {
-                    moods: [
-                        {mood: "indicative", tenses: [
-                            {tense: "present", pronouns: [
-                                "yo", "nosotros"
-                            ]}
-                        ]}
-                    ]
-                }
-            }
-        ],
-        verbs: [
-            {verb: "hablar"},
-            {verb: "comer"}
-        ]
-    })
-
-    await newQuiz.save()
-    console.log("done")
+app.get("/do-it/all/foo", (req,res) => {
+    res.send("second")
 })
 
 app.listen(5000, config.IPV4URL || "localhost", (res, req) => {
@@ -88,3 +55,13 @@ app.use((req,res,next) => {
 app.use((err, req, res, next) => {
     handleError(err, res);
 })
+
+
+/* 
+    api/quiz/lists/:id
+    api/quiz/verbs/:id
+    
+    api/quiz/configs/:id
+    api/quiz/configure
+
+*/

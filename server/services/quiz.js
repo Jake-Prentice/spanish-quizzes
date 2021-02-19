@@ -1,18 +1,15 @@
 const {ErrorHandler} = require("../helpers/error");
+const quiz = require("../models/quiz");
 const Quiz = require("../models/quiz");
 const VerbData = require("../models/verbData");
 
-const addVerbToQuiz = async ({quizId, verb}) => {
-    try{
-        await Quiz.findOneAndUpdate(
-            {_id: quizId}, {$push: {verbs: {verb} }}
-        )  
-    }catch(err) {throw new Error(err)}
-}
 
-const configureQuizConfig = (quizConfig, verb) => {
+const configureQuizConfig = async (quizConfig, verb) => {
 
-    const stack = [verb.paradigms];
+    const foundVerb = await VerbData.findOne({verb: verb})
+    
+
+    const stack = [foundVerb.toObject().paradigms];
     const words = [];
     
     const traverseTree = (obj) => {
@@ -26,6 +23,7 @@ const configureQuizConfig = (quizConfig, verb) => {
 
     const traverseConfig = (obj) => {
             for (let value in obj) {
+                
                 if (typeof obj[value] === "object") traverseConfig(obj[value])
                 else {
                     const next = stack[stack.length - 1][obj[value]]
@@ -45,32 +43,24 @@ const configureQuizConfig = (quizConfig, verb) => {
     }
 
     traverseConfig(quizConfig.filterOptions);
+    
     return words;
   
 }
 
 const configureQuizByConfigId = async (id) => {
-    try {
-        const foundQuiz = await Quiz.findOne({"configs._id": id}).select("configs.$ verbs");
-        const quizVerbs = [];
+    const foundQuiz = await Quiz.findOne({"configs._id": id}).select("configs.$ verbs");
+    const quizVerbs = [];
     
-        const verbs = await VerbData.find({ verb: {
-            $in: foundQuiz.verbs.map( ({verb}) => verb )
-        }})
-        
-        verbs.forEach(verb => {
-            quizVerbs.push(...configureQuizConfig(foundQuiz.configs[0].toObject(), verb.toObject()));
-        })
+    for (const {verb} of foundQuiz.verbs) {
+        quizVerbs.push(...await configureQuizConfig(foundQuiz.configs[0].toObject(), verb ))
+    }
 
-        return quizVerbs;
-
-    }catch(err) {throw new ErrorHandler(500, err.message)}
-
+    return quizVerbs;
 }
 
 
 module.exports = {
-    addVerbToQuiz,
     configureQuizConfig,
     configureQuizByConfigId
 };
