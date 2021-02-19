@@ -32,12 +32,9 @@ mongoose.connection.on("error", () => {
 //routes
 app.use("/api", routes); 
 
-app.get("/do-it/:id", async (req,res) => {
-    res.json(await getVerbData("arrepentirse"))
-})
-
-app.get("/do-it/all/foo", (req,res) => {
-    res.send("second")
+app.get("/do-it", async (req,res) => {
+    console.log("do it")
+    await quizService.configure(JSON.parse(req.body.config), "hablar");
 })
 
 app.listen(5000, config.IPV4URL || "localhost", (res, req) => {
