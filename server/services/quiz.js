@@ -8,38 +8,56 @@ const states = {
     "pronoun" : {next: null}
 }
 
-const configureQuizConfig = async (config, verb) => {
+const configureQuizConfig = async (filterOptions, verb) => {
 
     const foundVerb = await VerbData.findOne({verb: verb})
     const filteredVerbs = [];
 
-    const traverseTree = (obj) => {
+    const paradigms = {}
+
+    const traverseTree = (obj, index) => {
+        let nextIndex = index + 1;
         for (let value in obj) {
-            if (typeof obj[value] === "object") traverseTree(obj[value])
-            else filteredVerbs.push(obj[value])
+            paradigms[Object.keys(states)[nextIndex]] = value;
+            if (typeof obj[value] === "object") {
+                traverseTree(obj[value], nextIndex)
+            }else {
+                paradigms["conjugation"] = obj[value];
+                filteredVerbs.push({...paradigms})
+            }
         }
     }
 
-    const recurse = (config, verbData) => {
+   
+    const recurse = (fitlerOptionsRef, verbData) => {
         let currentParadigm = verbData;
 
-        for (let value in config) {
-            if (typeof config[value] === "object") {
-                recurse(config[value], currentParadigm)
-            }else {
-                if (!states.hasOwnProperty(value)) continue;
-                currentParadigm = currentParadigm[config[value]];
+        for (let value in fitlerOptionsRef) {
+            if (typeof fitlerOptionsRef[value] === "object") {
+                recurse(fitlerOptionsRef[value], currentParadigm)
+
+            }else if (states.hasOwnProperty(value)){
+                paradigms[value] = fitlerOptionsRef[value]
+                currentParadigm = currentParadigm[fitlerOptionsRef[value]];
                 const nextParadigms = states[value].next;
                 // if next exists and state is supposed to have a next but doesn't
                 if (nextParadigms) {
-                    if (!config[nextParadigms]) traverseTree(currentParadigm)            
-                }else filteredVerbs.push(currentParadigm);      
+                    if (!fitlerOptionsRef[nextParadigms]) {
+                        traverseTree(
+                            currentParadigm, 
+                            Object.keys(states).findIndex(state => state === value)
+                        ) 
+                    }           
+                }else {
+                    paradigms["conjugation"] = currentParadigm;
+                    filteredVerbs.push({...paradigms}); 
+                }     
             }
         }
     }
 
     recurse(
-        config.filterOptions, 
+        filterOptions, 
         foundVerb.paradigms.toObject()
     );
 
@@ -51,9 +69,11 @@ const configureQuizByConfigId = async (id) => {
     const foundQuiz = await Quiz.findOne({"configs._id": id}).select("configs.$ verbs");
     const quizVerbs = [];
     
-    console.log(foundQuiz.configs[0].filterOptions.moods)
     for (const {verb} of foundQuiz.verbs) {
-        quizVerbs.push(...await configureQuizConfig(foundQuiz.configs[0].toObject(), verb ))
+        quizVerbs.push(...await configureQuizConfig(
+            foundQuiz.configs[0].filterOptions.toObject(), 
+            verb 
+        ))
     }
 
     return quizVerbs;

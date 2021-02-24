@@ -5,7 +5,7 @@ export const BaseButton = styled.button`
     border: none;
     cursor: pointer;
     outline: none;
-    transition: filter 0.2s ease;
+    transition: filter 0.2s ease, opacity 0.2s ease;
     box-shadow: 0 0 0.3125em 0.1em rgba(0,0,0,.2), 
         inset 0 0 0.06em rgba(0,0,0,.4);
     

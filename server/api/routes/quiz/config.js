@@ -4,22 +4,21 @@ const {ErrorHandler} = require("../../../helpers/error");
 const quizService = require("../../../services/quiz")
 
 
-// GET api/quizzes/123/configure
+// GET api/quizzes/123/configure?filterOptions=...
 router.get("/:quizId/configure", async (req,res,next) => {
    try{
        const quizId = req.params.quizId;
-       const config = JSON.parse(req.body.config);
-       console.log(typeof config);
+       const filterOptions = JSON.parse(decodeURIComponent(req.query.filterOptions));
 
-       const arr = [];
+       const conjugations = [];
 
        const foundQuiz = await Quiz.findById(quizId);
 
        for (const {verb} of foundQuiz.verbs) {
-           arr.push(...await quizService.configureQuizConfig(config, verb))
+           conjugations.push(...await quizService.configureQuizConfig(filterOptions, verb))
        }
 
-        res.json(arr);
+        res.json(conjugations);
 
    }catch(err) {next(err)}
 

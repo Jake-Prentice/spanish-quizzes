@@ -34,7 +34,7 @@ app.use("/api", routes);
 
 app.get("/do-it", async (req,res) => {
     console.log("do it")
-    await quizService.configure(JSON.parse(req.body.config), "hablar");
+    res.json(await quizService.configureQuizConfig(JSON.parse(req.body.config), "hablar"));
 })
 
 app.listen(5000, config.IPV4URL || "localhost", (res, req) => {
