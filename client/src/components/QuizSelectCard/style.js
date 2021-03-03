@@ -10,7 +10,7 @@ export const CardWrapper = styled.div`
     align-items: center;
     flex-direction: column;
     position: relative;
-    z-index: 10;
+    z-index: 100;
   
 `;
 

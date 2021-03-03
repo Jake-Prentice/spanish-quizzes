@@ -17,19 +17,20 @@ const QuizContainer = css`
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    overflow: hidden;
 
 `
 
 export const MainCardContainer = styled.div`
 
     width: min(80vw, ${props => props.theme.mainCard.width});
-    height: 52.5rem;
-    max-height: 840px;
+    height: 840px;
     border-radius: 35px;
     border: ${borderSize} solid ${props => props.theme.colors.burntSienna};
 
-    @media (max-width: 450px) {
-        width: 100%;
+    @media (max-width: 650px) {
+        width: 100vw;
         height: 100vh;
         border-radius: 0;
         border: none;
@@ -50,7 +51,7 @@ export const Layout = styled.div`
     width: 100vw;
     height: 100vh;
 
-    @media (min-width: 450px) {
+    @media (min-width: 650px) {
         display: flex;
         justify-content: center;
         align-items: center;

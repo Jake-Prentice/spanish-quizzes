@@ -61,8 +61,7 @@ const ListsCard = (props) => {
 
     //outside click handlers
     const [listItemRef] = useClickOutside(resetStates, {
-        ignoreByAttr: ".list-item-ignore",
-        isDisabled: true
+        ignoreByAttr: ".list-item-ignore"
     });
 
     //mutation handler
@@ -72,11 +71,11 @@ const ListsCard = (props) => {
 
     //events
     const handleLoadList = () => {
+        if (quizzes[selectedQuiz.index].verbs.length === 0) return;
         setIsOpen(false);
         const path = generatePath(routes.config, {id: selectedQuiz.id})
    
         if (!urlMatch?.isExact || urlMatch?.params.id !== selectedQuiz.id) { 
-            console.log("here")
             sessionStorage.removeItem(QUIZ_CONFIG_STATES_SESSION_KEY);
             history.push(path);
         }
@@ -143,7 +142,7 @@ const ListsCard = (props) => {
                        
                         <ListItem 
                             key={quiz._id}
-                            className={"sub-lists-card-ignore"}
+                            className={"sub-lists-card-ignore list-item-ignore"}
                             ref={selectedQuiz.index === index && !infoPage 
                                 ? listItemRef 
                                 : null

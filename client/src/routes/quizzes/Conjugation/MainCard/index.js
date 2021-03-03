@@ -5,15 +5,13 @@ import Quiz from "components/conjugationMainCard/Quiz";
 import {MainCardContainer, Layout} from "./style";
 
 const MainCardLayout = (props) => {
-    useEffect(() => {
-        console.log("main card init ")
-    }, [])
+    
     return (
         <Layout>
             <div style={{position: "relative"}}>
                 <MainCardContainer {...props}> 
-                    <Route exact path={props.routes.config} component={() => <Config />} />
-                    <Route exact path={props.routes.quiz} render={() => <Quiz />} />
+                    <Route exact path={props.routes.config} component={Config} />
+                    <Route exact path={props.routes.quiz} component={Quiz} />
                 </MainCardContainer>
             </div>
         </Layout>

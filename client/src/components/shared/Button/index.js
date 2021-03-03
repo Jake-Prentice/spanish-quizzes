@@ -1,6 +1,7 @@
 import React from "react";
 import {
-    StyledButton
+    StyledButton,
+    BaseButton
 } from "./style";
 import {Link} from "react-router-dom";
 
@@ -20,6 +21,7 @@ export const handleLinkWrapping = (Component, props) => {
 }
 
 const Button = props => handleLinkWrapping(StyledButton, props);
+export const BaseButtonLinkWrapped = props => handleLinkWrapping(BaseButton, props);
 
 Button.defaultProps = {
     size: "medium",

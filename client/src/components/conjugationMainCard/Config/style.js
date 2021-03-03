@@ -86,18 +86,24 @@ export const StartButton = styled(Button)`
 
 export const FooterContainer = styled.div`
     display: flex;
-    justify-content: center;
+    padding: 0 20px;
     align-items: center;
     width: 100%;
     height: 25%;
     background: #3d3a4d;
     overflow: hidden;
     box-shadow: 0 0 0 12px #59566b;
+
+    @media (max-width: 650px) {
+        flex-direction: column;
+        overflow: scroll;
+    }
 ;
 
 `
 
-
-
-
-
+export const SliderContainer = styled.div`
+    background: green;
+    width: 80%;
+    height: 80%;
+`

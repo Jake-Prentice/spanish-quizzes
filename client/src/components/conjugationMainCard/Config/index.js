@@ -11,20 +11,26 @@ import {
     FooterContainer,
     CardContainer,
     StartButton,
-    LoadingScreen
+    LoadingScreen,
+    SliderContainer
 } from "./style";
 //hooks
 import useQuizConfigReducer from "hooks/useQuizConfigReducer";
 import {AnimatePresence} from "framer-motion";
 import {Ring} from "react-awesome-spinners";
+import Flex from "styled-flex-component";
+
 
 
 const ConfigPage = (props) => {
 
+    
     const [shouldRedirect, setShouldRedirect] = useState(false);
     const [configureQuizStatus, setConfigureQuizStatus] = useState("");
     const [isWarningModal, setIsWarningModal] = useState(false);
     
+    const numOfQuestions = 10;
+
     const history = useHistory();
     const quizId = useParams().id;
 
@@ -50,25 +56,22 @@ const ConfigPage = (props) => {
     );
 
 
-    useEffect(() => {
-      console.log("config first render")
-    }, [])
     const configureQuiz = useCallback(async () => {
         setConfigureQuizStatus("loading");
         const config = quizConfigStates.selected.config;
         if (!config) return;
         try {
-            let data;
+            let conjugations;
             if (typeof quizConfigStates.selected.saveIndex === "number") {
-                data = await configureQuizByConfigId(config._id);
-                console.log({data})
+                conjugations = await configureQuizByConfigId(config._id);
             }else {
-                data = await configureQuizByUnsavedConfig({config, quizId});
-                console.log(data)
+                conjugations = await configureQuizByUnsavedConfig({config, quizId});
             }
             //put data into session
+
+            sessionStorage.removeItem("quiz")
             setTimeout(() => {
-                history.push("../quiz");
+                history.push("../quiz", {conjugations, numOfQuestions});
             },800)
         }catch(err) {
             setConfigureQuizStatus("error")
@@ -115,24 +118,27 @@ const ConfigPage = (props) => {
             </ScrollContainer>
             
             <FooterContainer className={"ignore-select-options"}>
-                <SaveOptions 
-                    {...quizConfigStates}
-                    quiz={quiz}
-                    dispatch={dispatch}
-                />
-                <Margin all={"0 20px"} />
-                <StartButton 
-                    onClick={configureQuiz}
-                    disabled={typeof quizConfigStates.selected.saveIndex === "number" && !quizConfigStates.configsAreSaved}
-                    className="save-options-ignore"
-                >
-                    Start
-                </StartButton>
+                <Flex center style={{flexBasis: "80%", height: "100%"}}>
+                    <SliderContainer>
+                   
+                    </SliderContainer>
+                </Flex>
+                <Flex center full>
+                    <SaveOptions 
+                        {...quizConfigStates}
+                        quiz={quiz}
+                        dispatch={dispatch}
+                    />
+                    <Margin all={"0 20px"} />
+                    <StartButton 
+                        onClick={configureQuiz}
+                        disabled={typeof quizConfigStates.selected.saveIndex === "number" && !quizConfigStates.configsAreSaved}
+                        className="save-options-ignore"
+                    >
+                        Start
+                    </StartButton>
+                </Flex>
             </FooterContainer>
-            {/* <Prompt 
-                when={!quizConfigStates.configsAreSaved} 
-                message="You have unsaved changes, are you sure you want to leave?"
-            /> */}
 
         </>
     )
