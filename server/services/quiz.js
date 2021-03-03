@@ -23,7 +23,7 @@ const configureQuizConfig = async (filterOptions, verb) => {
                 traverseTree(obj[value], nextIndex)
             }else {
                 paradigms["conjugation"] = obj[value];
-                filteredVerbs.push({...paradigms})
+                filteredVerbs.push({...paradigms, infinitive: foundVerb.verb})
             }
         }
     }
@@ -50,7 +50,7 @@ const configureQuizConfig = async (filterOptions, verb) => {
                     }           
                 }else {
                     paradigms["conjugation"] = currentParadigm;
-                    filteredVerbs.push({...paradigms}); 
+                    filteredVerbs.push({...paradigms, infinitive: foundVerb.verb}); 
                 }     
             }
         }

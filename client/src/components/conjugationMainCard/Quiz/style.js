@@ -25,6 +25,7 @@ export const Form = styled(motion.form)`
     padding: 0 2.4rem;
     border: 5px solid #9583d8;
     max-width: 85%;
+    min-width: 350px;
 
     @media (max-width: 600px) {
         font-size: 16px;
@@ -35,7 +36,7 @@ export const Form = styled(motion.form)`
 export const QuestionInput = styled.input`
     border-radius: 0.2em;
     border: none;
-    height: 1.3em;
+    height: 1.2em;
     width: 20ch;
     font-size: min(max(3vw, 18px), 23px);
     padding: 1em 1em;
