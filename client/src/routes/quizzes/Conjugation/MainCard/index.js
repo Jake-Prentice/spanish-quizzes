@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {Route} from "react-router-dom";
-import Config from "components/conjugationMainCard/Config";
-import Quiz from "components/conjugationMainCard/Quiz";
+import Config from "components/conjugation-main-card/Config";
+import Quiz from "components/conjugation-main-card/Quiz";
 import {MainCardContainer, Layout} from "./style";
 
 const MainCardLayout = (props) => {

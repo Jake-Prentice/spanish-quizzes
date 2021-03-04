@@ -22,7 +22,7 @@ import * as faRegular from "@styled-icons/fa-regular";
 
 
 const isAVerb = (word) => {
-    return ["ar", "er", "ir"].includes(word.slice(-2).toLowerCase())
+    return ["ar", "er", "ir", "se"].includes(word.slice(-2).toLowerCase())
 }
 
 const VerbsPage = ({selectedQuiz, quizId}) => {
