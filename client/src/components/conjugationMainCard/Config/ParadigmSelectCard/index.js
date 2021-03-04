@@ -20,12 +20,7 @@ const SelectCard = (props) => {
 
 
     
-    const [optionRef] = useClickOutside(() => {
-        onClickOffOption && onClickOffOption();
-    }, {
-        ignoreByAttr: ".ignore-select-options",
-        isDisabled: typeof onClickOffOption === "boolean" && onClickOffOption === false
-    }) 
+ 
 
 
     const onClick = useSimpleAndDoubleClick({
@@ -40,7 +35,6 @@ const SelectCard = (props) => {
                  
                         <SelectCardOption 
                             isHighlighted={option?.isHighlighted === true}
-                            ref={selectedOptionIndex === index ? optionRef : null} //only have alerter if selected
                             onContextMenu={e => {
                                 e.preventDefault(); 
                                 onRightClickOption && onRightClickOption(index)

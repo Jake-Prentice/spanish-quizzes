@@ -15,7 +15,7 @@ export const initialStates = {
 
 
 const reducer = (draft, action) => { 
-    const initialWeightValue = 100;
+    const initialWeightValue = 10;
     switch(action.type) {
 
         case ACTIONS.SET_USER_ANSWER:
@@ -47,12 +47,13 @@ const reducer = (draft, action) => {
                         ...conjugation, 
                         weight: index === draft.questionIndex 
                             ? conjugation.weight 
-                            : conjugation.weight + weightSensitivity
+                            : conjugation.weight * 50
                     }
                 })
                 
             }else {
-                draft.conjugations[draft.questionIndex].weight += weightSensitivity;
+                const currentQuestion = draft.conjugations[draft.questionIndex];
+                currentQuestion.weight =  currentQuestion.weight * 50 ;
             }
 
             draft.questionIndex = action.payload;

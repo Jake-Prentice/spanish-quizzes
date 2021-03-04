@@ -12,7 +12,9 @@ import {
     CardContainer,
     StartButton,
     LoadingScreen,
-    SliderContainer
+    SliderContainer,
+    FooterFirstHalfWrapper,
+    FooterSecondHalfWrapper
 } from "./style";
 //hooks
 import useQuizConfigReducer from "hooks/useQuizConfigReducer";
@@ -28,8 +30,9 @@ const ConfigPage = (props) => {
     const [shouldRedirect, setShouldRedirect] = useState(false);
     const [configureQuizStatus, setConfigureQuizStatus] = useState("");
     const [isWarningModal, setIsWarningModal] = useState(false);
+    const [numOfQuestions, setNumOfQuestions] = useState(10);
     
-    const numOfQuestions = 10;
+
 
     const history = useHistory();
     const quizId = useParams().id;
@@ -98,7 +101,7 @@ const ConfigPage = (props) => {
     return (
         <>
             <ScrollContainer 
-                className={"save-options-ignore"}
+                className={"save-options-ignore ignore-select-options"}
                 quizTitle={quiz?.title}
             >
                 <CardContainer>
@@ -115,21 +118,22 @@ const ConfigPage = (props) => {
                         dispatch={dispatch} 
                     />
                 </CardContainer>
+ 
             </ScrollContainer>
             
             <FooterContainer className={"ignore-select-options"}>
-                <Flex center style={{flexBasis: "80%", height: "100%"}}>
+                
                     <SliderContainer>
-                   
+                        {numOfQuestions}
+                        <input type="range" min={0} max={400} step={5} onChange={e => setNumOfQuestions(+e.target.value)} />
                     </SliderContainer>
-                </Flex>
-                <Flex center full>
+          
                     <SaveOptions 
                         {...quizConfigStates}
                         quiz={quiz}
                         dispatch={dispatch}
                     />
-                    <Margin all={"0 20px"} />
+                  
                     <StartButton 
                         onClick={configureQuiz}
                         disabled={typeof quizConfigStates.selected.saveIndex === "number" && !quizConfigStates.configsAreSaved}
@@ -137,7 +141,7 @@ const ConfigPage = (props) => {
                     >
                         Start
                     </StartButton>
-                </Flex>
+        
             </FooterContainer>
 
         </>

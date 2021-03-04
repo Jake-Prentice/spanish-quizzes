@@ -26,6 +26,7 @@ router.route("/")
     .get(async (req,res,next) => {
         try {
             res.json(await Quiz.find({}));
+            console.log("fififf here here")
         } catch(err) {next(err)}
     })
 

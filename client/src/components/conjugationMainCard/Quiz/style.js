@@ -22,13 +22,14 @@ export const Form = styled(motion.form)`
     background: #3e3a4d;
     box-shadow: 0 0 30px rgba(0,0,0,.3);
     border-radius: 30px;
-    padding: 0 2.4rem;
+    padding: 0.5rem 2.4rem;
     border: 5px solid #9583d8;
-    max-width: 85%;
+    max-width: 80%;
     min-width: 350px;
 
     @media (max-width: 600px) {
         font-size: 16px;
+        padding-top: 1rem;
     }
 ` 
 

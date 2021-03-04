@@ -10,6 +10,7 @@ const ConfigContainer = css`
     align-items: center;
     flex-direction: column;
     overflow: hidden;
+    
 `
 
 const QuizContainer = css`
@@ -18,7 +19,8 @@ const QuizContainer = css`
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    overflow: hidden;
+    overflow-x: hidden;
+    
 
 `
 
@@ -31,7 +33,6 @@ export const MainCardContainer = styled.div`
 
     @media (max-width: 650px) {
         width: 100vw;
-        height: 100vh;
         border-radius: 0;
         border: none;
     }

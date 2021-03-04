@@ -8,14 +8,19 @@ export const Container = styled(motion.div)`
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    width: max(50%, 370px);
+    width: max(min(50%, 500px), min(370px, 80%));
     height: 500px;
     border-radius: 20px;
+
+    @media (max-width: 400px) {
+        font-size: 14px;
+    }
+
 `
 
 export const ButtonContainer = styled.div`
     background: #4f4b63;
-    padding: 1rem 1rem;
+    padding: 1em 1em;
     border-radius: 0.5rem;
     display: flex;
 `
@@ -24,9 +29,9 @@ export const ButtonContainer = styled.div`
 const SharedButtonStyle = styled(BaseButtonLinkWrapped)`
     padding: 0.9em 0.9em;
 
-    @media (max-width: 500px) {
+    /* @media (max-width: 500px) {
         font-size: 14px;
-    }
+    } */
   
 `
 

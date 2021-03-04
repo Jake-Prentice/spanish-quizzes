@@ -16,7 +16,7 @@ const config = require("./config");
 //middleware
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json());
-app.use(cors({origin: ["http://localhost:3000", `http://${config.IPV4URL}:3000`]}));
+app.use(cors());
 
 //loaders
 require("./loaders/mongoose")(); //start mongoose connection
@@ -32,12 +32,7 @@ mongoose.connection.on("error", () => {
 //routes
 app.use("/api", routes); 
 
-app.get("/do-it", async (req,res) => {
-    console.log("do it")
-    res.json(await quizService.configureQuizConfig(JSON.parse(req.body.config), "hablar"));
-})
-
-app.listen(5000, config.IPV4URL || "localhost", (res, req) => {
+app.listen(config.port, (res, req) => {
     console.log("listening on port 5000")
 })
 

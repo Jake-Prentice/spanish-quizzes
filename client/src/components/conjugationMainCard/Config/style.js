@@ -2,8 +2,6 @@ import styled, {css} from "styled-components";
 import {SelectCardWrapper} from "./ParadigmSelectCard/style";
 import Button from "components/shared/Button";
 
-const borderSize = "7px";
-
 export const CardContainer = styled.div`
     display: flex;
     flex: 0 0 ${props => `calc(${props.theme.mainCard.width} * 0.77)`};
@@ -33,23 +31,20 @@ export const ScrollContainer = styled.div`
     flex-wrap: nowrap;
     flex: 1;
     overflow: auto;
-    scrollbar-width: thin;
 
-    &::-webkit-scrollbar-track {
-        box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-        background-color: #F5F5F5;
+    ::-webkit-scrollbar {
+        height: 0.8em;        
+        background: white;
+    }
 
-    }
-    &::-webkit-scrollbar
-    {
-        width: 5px;
-        background-color: ${props => props.theme.colors.wildSand};
-    }
-    &::-webkit-scrollbar-thumb
-    {
-	    background-color: #f28672;
-        border-radius: 15px;
-    }
+    ::-webkit-scrollbar-thumb {
+        background: #59566b;
+        border-top-right-radius: 1rem;
+        border-bottom-right-radius: 1rem;
+    }​
+
+    
+
 
     &::before {
         content:"${props => props.quizTitle || "loading..."}";
@@ -84,26 +79,58 @@ export const StartButton = styled(Button)`
         letter-spacing: 1.8px;
 `
 
+
+export const SliderContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #4d4961;
+    border-radius: 1.5rem;
+    padding: 1rem 2rem;
+`
+
+
+
+export const FooterFirstHalfWrapper = styled.div`
+    display: flex;
+    margin: 0 20px 0 0;
+    align-items: center;
+    min-width: 50%;
+    height: 100%;
+`
+
+export const FooterSecondHalfWrapper = styled.div`
+    display: flex;
+    justify-content: start;
+    height: 100%;
+    align-items: center;
+    flex: 1;
+`
+
 export const FooterContainer = styled.div`
     display: flex;
     padding: 0 20px;
+    /* justify-content: center; */
     align-items: center;
     width: 100%;
     height: 25%;
     background: #3d3a4d;
-    overflow: hidden;
     box-shadow: 0 0 0 12px #59566b;
-
-    @media (max-width: 650px) {
+    flex-wrap:wrap;
+    /* gap: 1em; */
+   
+    
+    @media (max-width: 500px) {
+        padding: 10px 0px;
         flex-direction: column;
-        overflow: scroll;
-    }
+        flex-wrap: nowrap;
+
+        & > * {
+            margin: 20px 0;
+        }
+    } 
+    
 ;
 
 `
 
-export const SliderContainer = styled.div`
-    background: green;
-    width: 80%;
-    height: 80%;
-`
