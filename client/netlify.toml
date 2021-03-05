@@ -1,0 +1,8 @@
+[build]
+
+  base = "client/"
+
+  publish = "build/"
+
+  command = "npm run build"
+  
